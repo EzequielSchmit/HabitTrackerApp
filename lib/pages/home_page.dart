@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       child: Column(
         children: [
           DaysRow(),
-          SizedBox(height: 20,),
+          SizedBox(height: 5,),
           Expanded(
             child: ListView(
               children: [

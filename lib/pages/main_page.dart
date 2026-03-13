@@ -30,7 +30,7 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         backgroundColor: colors.secondary,
         surfaceTintColor: colors.secondary,
-        toolbarHeight: 120,
+        toolbarHeight: 90,
         title: selectedTab.title,
       ),
 

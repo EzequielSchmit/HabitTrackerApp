@@ -17,7 +17,7 @@ class BottomNavBar extends StatelessWidget {
     final double iconWidth = 50;
     return BottomAppBar(
       padding: EdgeInsets.all(10),
-      height: 110,
+      height: 95,
       color: colors.surfaceContainerLowest,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5),

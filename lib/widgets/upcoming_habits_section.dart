@@ -8,6 +8,12 @@ import 'package:habit_tracker_app/widgets/upcoming_habits_card.dart';
 
 class UpcomingHabitsSection extends StatefulWidget {
   const UpcomingHabitsSection({super.key});
+  
+  static final double verticalCardMargin = 8;
+  static final double cardHeight = 70;
+  
+  static final double fullCardHeight = verticalCardMargin*2 + cardHeight;
+  
 
   @override
   State<UpcomingHabitsSection> createState() => _UpcomingHabitsSectionState();
@@ -15,9 +21,6 @@ class UpcomingHabitsSection extends StatefulWidget {
 
 class _UpcomingHabitsSectionState extends State<UpcomingHabitsSection> {
 
-  static final double verticalMargin = 5;
-  static final double cardHeight = 70;
-  static final double fullCardheight = verticalMargin*2 + cardHeight;
   ScrollController? controller;
   final List<Habit> habits = [];
   bool isThereMoreElementsToShow = true;
@@ -58,9 +61,7 @@ class _UpcomingHabitsSectionState extends State<UpcomingHabitsSection> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Container(
-      // color: colors.secondary,
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-      height: 280,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -68,19 +69,20 @@ class _UpcomingHabitsSectionState extends State<UpcomingHabitsSection> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text("Próximos hábitos", style: Styles.sectionTitle.copyWith(backgroundColor: Colors.white),),
-              SizedBox(height: 20,),
-              Expanded(
+              SizedBox(height: 10,),
+              SizedBox(
+                height: 3*UpcomingHabitsSection.fullCardHeight,
                 child: ListView.builder(
                   controller: controller,
 
                   itemCount: habits.length,
-                  itemExtent: fullCardheight,
+                  itemExtent: UpcomingHabitsSection.fullCardHeight,
                   itemBuilder: (context, index) {
                     
                     return UpcomingHabitsCard(
                       habit: habits[index],
-                      height: cardHeight,
-                      verticalMargin: verticalMargin
+                      height: UpcomingHabitsSection.cardHeight,
+                      verticalMargin: UpcomingHabitsSection.verticalCardMargin,
                     );
                   },
                 ),

@@ -22,7 +22,7 @@ class NavButton extends StatelessWidget {
         padding: EdgeInsets.all(11),
         decoration: BoxDecoration(
           color: isSelected? colors.surfaceContainerLowest : colors.inverseSurface,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(18),
         ),
         child: SvgPicture.asset(
           "${Paths.iconFolderPath}${iconPath}",
