@@ -2,29 +2,31 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/model/habit.dart';
+import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/my_colors.dart';
 import 'package:habit_tracker_app/util/styles.dart';
-import 'package:habit_tracker_app/widgets/upcoming_habits_card.dart';
+import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
-class UpcomingHabitsSection extends StatefulWidget {
-  const UpcomingHabitsSection({super.key});
+class DailyHabitsSection extends StatefulWidget {
+  const DailyHabitsSection({super.key, required this.title, required this.entries, required this.onComplete});
   
   static final double verticalCardMargin = 8;
   static final double cardHeight = 70;
-  
   static final double fullCardHeight = verticalCardMargin*2 + cardHeight;
   
+  final String title;
+  final List<HabitEntry> entries;
+  final Function(HabitEntry) onComplete;
 
   @override
-  State<UpcomingHabitsSection> createState() => _UpcomingHabitsSectionState();
+  State<DailyHabitsSection> createState() => _DailyHabitsSectionState();
 }
 
-class _UpcomingHabitsSectionState extends State<UpcomingHabitsSection> {
+class _DailyHabitsSectionState extends State<DailyHabitsSection> {
 
   ScrollController? controller;
-  final List<Habit> habits = [];
   bool isThereMoreElementsToShow = true;
-
+  
   @override
   void initState(){
     super.initState();
@@ -41,13 +43,6 @@ class _UpcomingHabitsSectionState extends State<UpcomingHabitsSection> {
         });
       }  
     },);
-
-    List<Color> colors = MyColors.colors;
-    Random random = Random();
-    for (int i = 1; i < 11; i++){
-      Color randomColor = colors[random.nextInt(colors.length)];
-      habits.add(Habit(name: "Habito $i", backgroundColor: randomColor));
-    }
 
   }
 
@@ -68,21 +63,22 @@ class _UpcomingHabitsSectionState extends State<UpcomingHabitsSection> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("Próximos hábitos", style: Styles.sectionTitle.copyWith(backgroundColor: Colors.white),),
+              Text(widget.title, style: Styles.sectionTitle.copyWith(backgroundColor: Colors.white),),
               SizedBox(height: 10,),
               SizedBox(
-                height: 3*UpcomingHabitsSection.fullCardHeight,
+                height: 3*DailyHabitsSection.fullCardHeight,
                 child: ListView.builder(
                   controller: controller,
 
-                  itemCount: habits.length,
-                  itemExtent: UpcomingHabitsSection.fullCardHeight,
+                  itemCount: widget.entries.length,
+                  itemExtent: DailyHabitsSection.fullCardHeight,
                   itemBuilder: (context, index) {
-                    
-                    return UpcomingHabitsCard(
-                      habit: habits[index],
-                      height: UpcomingHabitsSection.cardHeight,
-                      verticalMargin: UpcomingHabitsSection.verticalCardMargin,
+                    HabitEntry entry = widget.entries[index];
+                    return DailyHabitsCard(
+                      entry: entry,
+                      height: DailyHabitsSection.cardHeight,
+                      verticalMargin: DailyHabitsSection.verticalCardMargin,
+                      onComplete: () => widget.onComplete(entry),
                     );
                   },
                 ),
