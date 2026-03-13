@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/widgets/days_row.dart';
+import 'package:habit_tracker_app/widgets/separating_line.dart';
 import 'package:habit_tracker_app/widgets/upcoming_habits_section.dart';
 
 class HomePage extends StatelessWidget {
@@ -19,14 +20,7 @@ class HomePage extends StatelessWidget {
             child: ListView(
               children: [
                 UpcomingHabitsSection(),
-                Container(
-                  height: 0.7,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [colors.onPrimary, colors.onSecondary.withAlpha(100), colors.onPrimary],
-                      stops: [0.1, 0.5, 0.9],
-                    ),
-                  ),
-                ),
+                SeparatingLine(colors: colors),
                 UpcomingHabitsSection(),
                 UpcomingHabitsSection(),
                 

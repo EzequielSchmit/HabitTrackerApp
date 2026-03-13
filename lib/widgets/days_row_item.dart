@@ -26,12 +26,13 @@ class DaysRowItem extends StatelessWidget {
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 0,
             children: [
               Text( WeekDay.getDayName(date.weekday).substring(0,3),
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: foregroundColor,
-                  fontWeight: FontWeight.w300
+                  fontWeight: FontWeight.w300,
                 ),
               ),
               Text("${date.day}",

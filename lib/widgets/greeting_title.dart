@@ -17,7 +17,7 @@ class GreetingTitle extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          Container(height: 30,),
+          // Container(height: 15,),
           Row(
             children: [
               Text("¡${greetingStringInParts[0]} ", style: style,),

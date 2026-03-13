@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Habit Tracker App',
       theme: ThemeData(
         colorScheme: .fromSeed(
           seedColor: const Color.fromARGB(255, 255, 65, 65), //const Color.fromARGB(255, 0, 110, 255),
@@ -24,7 +24,10 @@ class MyApp extends StatelessWidget {
           surfaceContainerLowest: const Color(0xFFFFFFFF),
           onSurface: const Color(0xFF000000),
           inverseSurface: const Color.fromARGB(255, 51, 51, 76),
-          brightness: Brightness.light
+          tertiary: const Color.fromARGB(255, 51, 51, 76),
+          onTertiary: const Color(0xFFFFFFFF),
+          brightness: Brightness.light,
+          // surfaceContainerLow: 
         ),
         fontFamily: "GoogleSans",
       ),

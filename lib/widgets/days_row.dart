@@ -76,7 +76,7 @@ class _DaysRowState extends State<DaysRow> {
                 )
               ),
               SizedBox(
-                height: 85,
+                height: 75,
                 // color: Colors.blue, // colors.surfaceContainerLowest,
                 child: ListView.builder(
                   controller: controller,

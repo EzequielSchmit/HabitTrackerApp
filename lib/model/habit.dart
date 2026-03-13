@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+
 class Habit {
-  const Habit({required this.name, });
+  const Habit({required this.name, required this.backgroundColor });
   final String name;
+  final Color backgroundColor;
 }

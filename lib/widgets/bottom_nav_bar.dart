@@ -20,11 +20,11 @@ class BottomNavBar extends StatelessWidget {
       height: 110,
       color: colors.surfaceContainerLowest,
       child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           color: colors.inverseSurface,
           borderRadius: BorderRadius.circular(20),
         ),
-        // padding: EdgeInsets.all(10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

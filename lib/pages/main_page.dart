@@ -28,7 +28,8 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: Colors.amber,
       appBar: AppBar(
-        backgroundColor: colors.surfaceContainerLowest,
+        backgroundColor: colors.secondary,
+        surfaceTintColor: colors.secondary,
         toolbarHeight: 120,
         title: selectedTab.title,
       ),
