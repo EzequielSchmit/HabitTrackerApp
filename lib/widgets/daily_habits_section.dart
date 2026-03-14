@@ -8,7 +8,7 @@ import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  const DailyHabitsSection({super.key, required this.title, required this.entries, required this.onComplete});
+  const DailyHabitsSection({super.key, required this.title, required this.entries, required this.onComplete, required this.messageWhenEmpty});
   
   static final double verticalCardMargin = 8;
   static final double cardHeight = 70;
@@ -17,7 +17,8 @@ class DailyHabitsSection extends StatefulWidget {
   final String title;
   final List<HabitEntry> entries;
   final Function(HabitEntry) onComplete;
-
+  final String messageWhenEmpty;
+  
   @override
   State<DailyHabitsSection> createState() => _DailyHabitsSectionState();
 }
@@ -55,38 +56,55 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final bool thereAreEntries = widget.entries.isNotEmpty;
+    final int maxVisibleEntries = 3;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       child: Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(widget.title, style: Styles.sectionTitle.copyWith(backgroundColor: Colors.white),),
               SizedBox(height: 10,),
-              SizedBox(
-                height: 3*DailyHabitsSection.fullCardHeight,
-                child: ListView.builder(
-                  controller: controller,
-
-                  itemCount: widget.entries.length,
-                  itemExtent: DailyHabitsSection.fullCardHeight,
-                  itemBuilder: (context, index) {
-                    HabitEntry entry = widget.entries[index];
-                    return DailyHabitsCard(
-                      key: ValueKey(entry.id),
-                      entry: entry,
-                      height: DailyHabitsSection.cardHeight,
-                      verticalMargin: DailyHabitsSection.verticalCardMargin,
-                      onComplete: () => widget.onComplete(entry),
-                    );
-                  },
+              AnimatedSize(
+                alignment: Alignment.topCenter,
+                duration: Duration(milliseconds: 350),
+                curve: Curves.easeInOut,
+                child: SizedBox(
+                  height: (thereAreEntries ? min(maxVisibleEntries, widget.entries.length) : 1)*DailyHabitsSection.fullCardHeight,
+                  child: thereAreEntries ? ListView.builder(
+                    controller: controller,
+                    
+                    itemCount: widget.entries.length,
+                    itemExtent: DailyHabitsSection.fullCardHeight,
+                    itemBuilder: (context, index) {
+                      HabitEntry entry = widget.entries[index];
+                      return DailyHabitsCard(
+                        key: ValueKey(entry.id),
+                        entry: entry, 
+                        height: DailyHabitsSection.cardHeight,
+                        verticalMargin: DailyHabitsSection.verticalCardMargin,
+                        onComplete: () => widget.onComplete(entry),
+                      );
+                    },
+                  ) : Container(
+                    height: DailyHabitsSection.fullCardHeight,
+                    margin: EdgeInsets.symmetric(vertical: DailyHabitsSection.verticalCardMargin),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: colors.secondary,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(widget.messageWhenEmpty
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-          if (isThereMoreElementsToShow)
+          if (isThereMoreElementsToShow && widget.entries.length > maxVisibleEntries)
             Positioned(
               bottom: 0,
               left: 0,

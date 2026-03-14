@@ -66,9 +66,12 @@ class _HomePageState extends State<HomePage> {
                   entries: entriesFromSelectedDay.where((element) => !element.completed,).toList(),
                   onComplete: (entry) {
                     setState(() {
-                      entry.incrementProgress();
+                      // entry.incrementProgress();
+                      entry.progress++;
+                      print("${entry.progress}: ${entry.completed}");
                     });
                   },
+                  messageWhenEmpty: "¡No hay hábitos para los próximos días!",
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(
@@ -76,9 +79,12 @@ class _HomePageState extends State<HomePage> {
                   entries: entriesFromSelectedDay.where((element) => element.completed,).toList(),
                   onComplete: (entry) {
                     setState(() {
-                      entry.decrementProgress();
+                      // entry.decrementProgress();
+                      entry.progress--;
+                      print("${entry.progress}: ${entry.completed}");
                     });
                   },
+                  messageWhenEmpty: "¡No hay hábitos completados aún!",
                 ),
               ],
             ),

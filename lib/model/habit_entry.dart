@@ -14,13 +14,17 @@ class HabitEntry {
 
   int get progress => _progress;
 
-  void incrementProgress() {
-    _progress++;
+  set progress(int val) {
+    if (val >= 0) _progress = val;
   }
 
-  void decrementProgress() {
-    if (_progress > 0) _progress--;
-  }
+  // void incrementProgress() {
+  //   _progress++;
+  // }
+
+  // void decrementProgress() {
+  //   if (_progress > 0) _progress--;
+  // }
 
   bool get completed {
     return rule.isCompleted(progress);

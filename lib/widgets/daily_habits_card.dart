@@ -34,44 +34,52 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     final double cardPadding = 15;
     final double iconHeight = widget.height - 2*cardPadding;
     final bool completed = widget.entry.completed;
-    return Container(
-      height: widget.height,
-      margin: EdgeInsets.symmetric(vertical: widget.verticalMargin),
-      padding: EdgeInsets.all(cardPadding),
-      decoration: BoxDecoration(
-        color: completed ? colors.secondary : widget.entry.habit.backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: iconHeight,
-            width: iconHeight,
-            decoration: BoxDecoration(
-              color: colors.onPrimary.withAlpha(100),
-              borderRadius: BorderRadius.circular(10),
-            ),
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 250),
+      opacity: _isAnimating ? 0 : 1,
+      child: AnimatedScale(
+        duration: Duration(microseconds: 350),
+        scale: _isAnimating ? 0.95 : 1,
+        child: Container(
+          height: widget.height,
+          margin: EdgeInsets.symmetric(vertical: widget.verticalMargin),
+          padding: EdgeInsets.all(cardPadding),
+          decoration: BoxDecoration(
+            color: completed ? colors.secondary : widget.entry.habit.backgroundColor,
+            borderRadius: BorderRadius.circular(20),
           ),
-          SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.entry.habit.name,
-                  style: Styles.cardHabitName.copyWith(
-                    color: completed? colors.onSecondary : colors.onPrimary),
-                  ),
-                Text(
-                  widget.entry.habit.getFrequencyDescription(),
-                  style: Styles.cardHabitFrequencyDescription.copyWith(
-                    color: completed? colors.onSecondary : colors.onPrimary),
+          child: Row(
+            children: [
+              Container(
+                height: iconHeight,
+                width: iconHeight,
+                decoration: BoxDecoration(
+                  color: colors.onPrimary.withAlpha(100),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ],
-            )
+              ),
+              SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.entry.habit.name,
+                      style: Styles.cardHabitName.copyWith(
+                        color: completed? colors.onSecondary : colors.onPrimary),
+                      ),
+                    Text(
+                      widget.entry.habit.getFrequencyDescription(),
+                      style: Styles.cardHabitFrequencyDescription.copyWith(
+                        color: completed? colors.onSecondary : colors.onPrimary),
+                    ),
+                  ],
+                )
+              ),
+              CompleteButton(iconHeight: iconHeight, colors: colors, isAnimating: _isAnimating, onChanged: _handleComplete,),
+            ]
           ),
-          CompleteButton(iconHeight: iconHeight, colors: colors, onChanged: _handleComplete,),
-        ]
+        ),
       ),
     );
   }
@@ -83,16 +91,18 @@ class CompleteButton extends StatelessWidget {
     required this.iconHeight,
     required this.colors,
     required this.onChanged,
+    required this.isAnimating,
   });
 
   final double iconHeight;
   final ColorScheme colors;
   final Function() onChanged;
+  final bool isAnimating;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onChanged(),
+      onTap: isAnimating? null : () => onChanged(),
       child: Container(
         height: iconHeight,
         width: iconHeight,
