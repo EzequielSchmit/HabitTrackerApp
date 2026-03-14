@@ -22,14 +22,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState(){
-
+    super.initState();
+      
     List<Habit> habits = [];
 
     List<Color> colors = MyColors.colors;
     Random random = Random();
     for (int i = 1; i < 11; i++){
       Color randomColor = colors[random.nextInt(colors.length)];
-      habits.add(Habit(name: "Habito $i", backgroundColor: randomColor));
+      habits.add(Habit(name: "Habito $i", backgroundColor: randomColor, id: Habit.getNewId()));
     }
 
     DateTime now, today;

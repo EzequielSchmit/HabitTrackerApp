@@ -3,10 +3,12 @@ import 'package:habit_tracker_app/model/habit.dart';
 
 class HabitEntry {
 
-  HabitEntry({required this.habit, required this.date, required this.rule, required int progress}) : _progress = progress;
+  HabitEntry({required this.habit, required DateTime date, required this.rule, required int progress}) : _progress = progress {
+    this.date = DateTime(date.year, date.month, date.day);
+  }
 
   final Habit habit;
-  final DateTime date;
+  late final DateTime date;
   final CompletionRule rule;
   int _progress;
 
@@ -23,5 +25,7 @@ class HabitEntry {
   bool get completed {
     return rule.isCompleted(progress);
   }
+
+  String get id => "${habit.id}${date.year}/${date.month}/${date.day}";
 
 }

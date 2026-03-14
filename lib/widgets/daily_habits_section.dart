@@ -75,6 +75,7 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                   itemBuilder: (context, index) {
                     HabitEntry entry = widget.entries[index];
                     return DailyHabitsCard(
+                      key: ValueKey(entry.id),
                       entry: entry,
                       height: DailyHabitsSection.cardHeight,
                       verticalMargin: DailyHabitsSection.verticalCardMargin,

@@ -15,7 +15,8 @@ class _DaysRowState extends State<DaysRow> {
   static const double horizontalItemPadding = 8;
   static const double fullItemWidth = itemWidth + 2*horizontalItemPadding;
   static const int centerIndex = 20*365;
-  ScrollController? controller;  
+  // ScrollController? controller;  
+  late final ScrollController controller;
   DateTime today = normalizeDate(DateTime.now());
   DateTime selectedDate = normalizeDate(DateTime.now());
   DateTime viewedDate = normalizeDate(DateTime.now());
@@ -27,12 +28,13 @@ class _DaysRowState extends State<DaysRow> {
     // controller = ScrollController(
     //   initialScrollOffset: centerIndex*(itemWidth+2*horizontalItemPadding) - 30,
     // );
-
+    controller = ScrollController();
+    controller.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -43,7 +45,10 @@ class _DaysRowState extends State<DaysRow> {
       }
     });
   }
-
+  
+  double? viewportWidth;
+  bool initialized = false;
+  
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -51,14 +56,27 @@ class _DaysRowState extends State<DaysRow> {
     return LayoutBuilder(
       builder: (context, constraints) {
         
-        final viewportWidth = constraints.maxWidth;
+        viewportWidth = constraints.maxWidth;
+
+        if (!initialized && viewportWidth! > 0) {
+          initialized = true;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final initialOffset =
+                centerIndex * fullItemWidth - viewportWidth! / 2 + fullItemWidth / 2;
+
+            controller.jumpTo(initialOffset);
+          });
+        }
+
+        /*final viewportWidth = constraints.maxWidth;
         
         final initialOffset = centerIndex*fullItemWidth - viewportWidth/2 + fullItemWidth/2 ;
         
         if (controller == null || !controller!.hasClients){
           controller = ScrollController(initialScrollOffset: initialOffset);
           controller!.addListener(_onScroll);
-        }
+        }*/
 
         return Container(
           padding: EdgeInsets.symmetric(vertical: 10),
