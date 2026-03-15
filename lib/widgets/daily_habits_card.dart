@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_tracker_app/model/habit.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
+import 'package:habit_tracker_app/util/paths.dart';
 import 'package:habit_tracker_app/util/styles.dart';
+import 'package:habit_tracker_app/widgets/complete_button.dart';
 
 class DailyHabitsCard extends StatefulWidget {
   const DailyHabitsCard({super.key, required this.entry, required this.height, required this.verticalMargin, required this.onComplete});
@@ -20,11 +23,12 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   bool _isAnimating = false;
 
   Future<void> _handleComplete() async {
-    setState(() {
-      _isAnimating = true;
-    });
-    String habitName = widget.entry.habit.name;
-    await Future.delayed(Duration(milliseconds: 350));
+    if (widget.entry.isAboutToBeCompleted()){
+      setState(() {
+        _isAnimating = true;
+      });
+      await Future.delayed(Duration(milliseconds: 350));
+    }
     widget.onComplete();
   }
   
@@ -35,10 +39,10 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     final double iconHeight = widget.height - 2*cardPadding;
     final bool completed = widget.entry.completed;
     return AnimatedOpacity(
-      duration: Duration(milliseconds: 250),
+      duration: Duration(milliseconds: 350),
       opacity: _isAnimating ? 0 : 1,
       child: AnimatedScale(
-        duration: Duration(microseconds: 350),
+        duration: Duration(milliseconds: 350),
         scale: _isAnimating ? 0.95 : 1,
         child: Container(
           height: widget.height,
@@ -76,7 +80,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                   ],
                 )
               ),
-              CompleteButton(iconHeight: iconHeight, colors: colors, isAnimating: _isAnimating, onChanged: _handleComplete,),
+              CompleteButton(iconHeight: iconHeight, colors: colors, isAnimating: _isAnimating, onChanged: _handleComplete, entry: widget.entry),
             ]
           ),
         ),
@@ -85,42 +89,9 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   }
 }
 
-class CompleteButton extends StatelessWidget {
-  const CompleteButton({
-    super.key,
-    required this.iconHeight,
-    required this.colors,
-    required this.onChanged,
-    required this.isAnimating,
-  });
-
-  final double iconHeight;
-  final ColorScheme colors;
-  final Function() onChanged;
-  final bool isAnimating;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: isAnimating? null : () => onChanged(),
-      child: Container(
-        height: iconHeight,
-        width: iconHeight,
-        padding: EdgeInsets.all(9),
-        decoration: BoxDecoration(
-          color: colors.onPrimary.withAlpha(100),
-          borderRadius: BorderRadius.circular(iconHeight),
-        ),
-        child: Container(
-          height: iconHeight,
-          width: iconHeight,
-          decoration: BoxDecoration(
-            border: BoxBorder.all(color: colors.onPrimary, width: 1.5),
-            borderRadius: BorderRadius.circular(iconHeight),
-          ),
-          
-        ),
-      ),
-    );
-  }
+enum ButtonIcon {
+  plus(iconName: "plus.svg"),
+  completed(iconName: "complete-black.svg");
+  final String iconName;
+  const ButtonIcon({required this.iconName});
 }

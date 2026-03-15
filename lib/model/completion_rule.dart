@@ -14,4 +14,6 @@ class CompletionRule {
     return completedByExcess? progress >= completionTarget : progress < completionTarget;
   }
 
+  bool get trivial => completionTarget == 1;
+
 }

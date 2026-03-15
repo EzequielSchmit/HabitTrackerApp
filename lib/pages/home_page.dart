@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
       CompletionRule rule = CompletionRule(
         id: 1,
         habit: h,
-        completionTarget: 1,
+        completionTarget: 3,// random.nextInt(3)+1,
         startDate: today,
         endDate: today
       );
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                       print("${entry.progress}: ${entry.completed}");
                     });
                   },
-                  messageWhenEmpty: "¡No hay hábitos para los próximos días!",
+                  messageWhenEmpty: "¡No hay hábitos pendientes para los próximos días!",
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(

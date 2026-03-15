@@ -30,6 +30,12 @@ class HabitEntry {
     return rule.isCompleted(progress);
   }
 
+  int getProgressPercentage(int progress) => (100*progress/rule.completionTarget).floor();
+
+  bool isAboutToBeCompleted(){
+    return progress >= rule.completionTarget - 1;
+  }
+
   String get id => "${habit.id}${date.year}/${date.month}/${date.day}";
 
 }
