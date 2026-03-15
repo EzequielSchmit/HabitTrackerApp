@@ -39,9 +39,6 @@ class _CompleteButtonState extends State<CompleteButton> {
       HabitEntry entry = widget.entry;
       progressPercentage = entry.getProgressPercentage(entry.progress+1);
       if (widget.entry.isAboutToBeCompleted()){
-        // probé darle un respiro para que pueda mostrar la animacion antes de cambiar de icono y que renderice de nuevo el button pero no ayudó
-        // await Future.delayed(Duration(milliseconds: 200));
-        // _isAnimating = true;
         currentIcon = ButtonIcon.completed;
       }
     });
@@ -59,12 +56,12 @@ class _CompleteButtonState extends State<CompleteButton> {
     if (!widget.entry.isAboutToBeCompleted()){
       setState(() {
         _isPressed= true;
-        _isAnimating = true;
+        // _isAnimating = true;
       });
       await Future.delayed(Duration(milliseconds: 200));
       setState(() {
         _isPressed= false;
-        _isAnimating = false;
+        // _isAnimating = false;
       });
     }
   }
@@ -81,8 +78,8 @@ class _CompleteButtonState extends State<CompleteButton> {
     ColorScheme colors = Theme.of(context).colorScheme;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: widget.isAnimating || _isAnimating? null : (_) => _handleTapDown(),
-      onTap: widget.isAnimating || _isAnimating? null : () => _handleTap(),
+      onTapDown: widget.isAnimating ? null : (_) => _handleTapDown(),
+      onTap: widget.isAnimating ? null : () => _handleTap(),
       child: Container(
         height: widget.iconHeight,
         width: widget.iconHeight,

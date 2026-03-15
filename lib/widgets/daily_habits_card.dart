@@ -5,6 +5,7 @@ import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/paths.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/complete_button.dart';
+import 'package:habit_tracker_app/widgets/decrease_button.dart';
 
 class DailyHabitsCard extends StatefulWidget {
   const DailyHabitsCard({super.key, required this.entry, required this.height, required this.verticalMargin, required this.onComplete});
@@ -32,6 +33,12 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     widget.onComplete();
   }
   
+  void _handleDecrease(){
+    setState(() {
+      widget.entry.progress--;  
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -80,6 +87,8 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                   ],
                 )
               ),
+              if (!widget.entry.completed && !widget.entry.rule.trivial)
+                DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease),  
               CompleteButton(iconHeight: iconHeight, colors: colors, isAnimating: _isAnimating, onChanged: _handleComplete, entry: widget.entry),
             ]
           ),

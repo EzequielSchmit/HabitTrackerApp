@@ -68,7 +68,6 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       // entry.incrementProgress();
                       entry.progress++;
-                      print("${entry.progress}: ${entry.completed}");
                     });
                   },
                   messageWhenEmpty: "¡No hay hábitos pendientes para los próximos días!",
@@ -81,7 +80,6 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       // entry.decrementProgress();
                       entry.progress--;
-                      print("${entry.progress}: ${entry.completed}");
                     });
                   },
                   messageWhenEmpty: "¡No hay hábitos completados aún!",
