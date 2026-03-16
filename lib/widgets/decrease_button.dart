@@ -26,7 +26,6 @@ class DecreaseButton extends StatelessWidget {
           height: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            // color: colors.onPrimary.withAlpha(100),
             color: colors.onSecondary.withAlpha(22),
             
             borderRadius: BorderRadius.circular(iconHeight),

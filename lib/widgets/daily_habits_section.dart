@@ -8,7 +8,7 @@ import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  const DailyHabitsSection({super.key, required this.title, required this.entries, required this.onComplete, required this.messageWhenEmpty});
+  const DailyHabitsSection({super.key, required this.title, required this.entries, required this.onEntryChanged, required this.onAction, required this.messageWhenEmpty});
   
   static final double verticalCardMargin = 8;
   static final double cardHeight = 70;
@@ -16,7 +16,8 @@ class DailyHabitsSection extends StatefulWidget {
   
   final String title;
   final List<HabitEntry> entries;
-  final Function(HabitEntry) onComplete;
+  final Function() onEntryChanged;
+  final Function(HabitEntry) onAction;
   final String messageWhenEmpty;
   
   @override
@@ -86,7 +87,8 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                         entry: entry, 
                         height: DailyHabitsSection.cardHeight,
                         verticalMargin: DailyHabitsSection.verticalCardMargin,
-                        onComplete: () => widget.onComplete(entry),
+                        onEntryChanged: () => widget.onEntryChanged(),
+                        onAction: widget.onAction,
                       );
                     },
                   ) : Container(

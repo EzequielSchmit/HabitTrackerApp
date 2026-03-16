@@ -48,6 +48,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _rebuild() {
+    setState(()=>());
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -64,24 +68,16 @@ class _HomePageState extends State<HomePage> {
                 DailyHabitsSection(
                   title: "Próximos hábitos",
                   entries: entriesFromSelectedDay.where((element) => !element.completed,).toList(),
-                  onComplete: (entry) {
-                    setState(() {
-                      // entry.incrementProgress();
-                      entry.progress++;
-                    });
-                  },
+                  onEntryChanged: _rebuild,
+                  onAction: (entry){entry.progress++;},
                   messageWhenEmpty: "¡No hay hábitos pendientes para los próximos días!",
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(
                   title: "Completado",
                   entries: entriesFromSelectedDay.where((element) => element.completed,).toList(),
-                  onComplete: (entry) {
-                    setState(() {
-                      // entry.decrementProgress();
-                      entry.progress--;
-                    });
-                  },
+                  onEntryChanged: _rebuild,
+                  onAction: (entry){entry.progress--;},
                   messageWhenEmpty: "¡No hay hábitos completados aún!",
                 ),
               ],
