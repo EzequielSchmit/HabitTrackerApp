@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:habit_tracker_app/enums/my_icon.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/paths.dart';
@@ -10,8 +11,7 @@ class CompleteButton extends StatefulWidget {
     super.key,
     required this.iconHeight,
     required this.colors,
-    required this.onChanged,
-    required this.onChangeAnimated,
+    required this.onCompletionChange,
     required this.onLongPress,
     required this.isAnimating,
     required this.entry,
@@ -19,8 +19,7 @@ class CompleteButton extends StatefulWidget {
 
   final double iconHeight;
   final ColorScheme colors;
-  final Function() onChanged;
-  final Function(bool) onChangeAnimated;
+  final Function(bool) onCompletionChange;
   final Function() onLongPress;
 
   final bool isAnimating;
@@ -39,14 +38,13 @@ class _CompleteButtonState extends State<CompleteButton> {
 
     bool wasCompleted = widget.entry.completed;
     
-    // widget.onChanged();
     widget.entry.progress++;
     
     setState(() {});
     await Future.delayed(Duration(milliseconds: 200));
 
     bool completedStateChanged = widget.entry.completed != wasCompleted;
-    widget.onChangeAnimated(completedStateChanged);
+    widget.onCompletionChange(completedStateChanged);
   }
 
   Future<void> _handleTapDown() async {
@@ -80,14 +78,14 @@ class _CompleteButtonState extends State<CompleteButton> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            if (!widget.entry.rule.trivial && !widget.entry.completed)
+            // if (!widget.entry.rule.trivial && !widget.entry.completed)
               SizedBox(
                 height: widget.iconHeight,
                 width: widget.iconHeight,
                 child: TweenAnimationBuilder<double>(
                   key: ValueKey(widget.entry.id),
                   tween: Tween(
-                    end: widget.entry.rule.getProgressPercentage(widget.entry.progress) / 100,
+                    end: widget.entry.getProgressPercentage() / 100,
                   ),
                   duration: Duration(milliseconds: 200),
                   builder: (context, value, child){
@@ -133,7 +131,7 @@ class _CompleteButtonState extends State<CompleteButton> {
       width: widget.iconHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.iconHeight),
-        color: currentIcon == ButtonIcon.plus ? backgroundColor : color,
+        color: currentIcon == MyIcon.plus ? backgroundColor : color,
       ),
       child: getSvgIcon(backgroundColor: backgroundColor, color: color),
     );
@@ -141,7 +139,7 @@ class _CompleteButtonState extends State<CompleteButton> {
 
   SvgPicture getSvgIcon({required Color backgroundColor, required Color color}){
     String iconName = currentIcon.iconName;
-    if (currentIcon == ButtonIcon.plus) {
+    if (currentIcon == MyIcon.plus) {
       return SvgPicture.asset("${Paths.iconFolderPath}$iconName",
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
@@ -152,6 +150,6 @@ class _CompleteButtonState extends State<CompleteButton> {
     }
   }
 
-  ButtonIcon get currentIcon => (widget.entry.rule.type != CompletionType.atMost && widget.entry.progress + 1 == widget.entry.rule.completionTarget) ? ButtonIcon.completed : ButtonIcon.plus;
+  MyIcon get currentIcon => (widget.entry.rule.type != CompletionType.atMost && widget.entry.progress + 1 == widget.entry.rule.completionTarget) ? MyIcon.completed : MyIcon.plus;
 
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:habit_tracker_app/enums/my_icon.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
+import 'package:habit_tracker_app/util/paths.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/complete_button.dart';
 import 'package:habit_tracker_app/widgets/decrease_button.dart';
@@ -9,7 +12,6 @@ class DailyHabitsCard extends StatefulWidget {
   const DailyHabitsCard({super.key, required this.entry, required this.height, required this.verticalMargin,
                         required this.onEntryChanged, required this.onAction});
 
-  // final Habit habit;
   final HabitEntry entry;
   final double height, verticalMargin;
   final VoidCallback onEntryChanged;
@@ -21,33 +23,32 @@ class DailyHabitsCard extends StatefulWidget {
 
 class _DailyHabitsCardState extends State<DailyHabitsCard> {
   
-  bool _isAnimating = false;
+  bool _isAnimatingFadeOut = false;
 
   void _handleComplete() {
     widget.onAction(widget.entry);
   }
   
-  Future<void> _handleCompleteAnimation(bool completedStateChanged) async {
+  Future<void> _animateCompletionChange(bool completedStateChanged) async {
     if (completedStateChanged){
       setState(() {
-        _isAnimating = true;
+        _isAnimatingFadeOut = true;
       });
       await Future.delayed(Duration(milliseconds: 350));
       setState(() {
-        _isAnimating = false;
+        _isAnimatingFadeOut = false;
       });
       widget.onEntryChanged();
     } else {
       _rebuild();
     }
-    print("rebuilding evrthng");
   }
 
   void _handleDecrease(){
     bool wasCompleted = widget.entry.completed;
     widget.entry.progress--;
     bool completedStateChanged = widget.entry.completed != wasCompleted;
-    _handleCompleteAnimation(completedStateChanged);
+    _animateCompletionChange(completedStateChanged);
   }
 
   Future<int?> _changeProgressWithValidation(BuildContext context, CompletionRule rule) async {
@@ -106,7 +107,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
       widget.entry.progress = result;
       bool isCompleted = widget.entry.completed;
       
-      _handleCompleteAnimation(wasCompleted && isCompleted);
+      _animateCompletionChange(wasCompleted != isCompleted);
     }
   }
 
@@ -123,16 +124,16 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     
     return AnimatedOpacity(
       duration: Duration(milliseconds: 350),
-      opacity: _isAnimating ? 0 : 1,
+      opacity: _isAnimatingFadeOut ? 0 : 1,
       child: AnimatedScale(
         duration: Duration(milliseconds: 350),
-        scale: _isAnimating ? 0.95 : 1,
+        scale: _isAnimatingFadeOut ? 0.95 : 1,
         child: Container(
           height: widget.height,
           margin: EdgeInsets.symmetric(vertical: widget.verticalMargin),
           // padding: EdgeInsets.all(cardPadding),
           decoration: BoxDecoration(
-            color: completed && !_isAnimating ? colors.secondary : widget.entry.habit.color,
+            color: completed && !_isAnimatingFadeOut ? colors.secondary : widget.entry.habit.color,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Stack(
@@ -149,10 +150,9 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                     CompleteButton(
                       iconHeight: iconHeight,
                       colors: colors,
-                      isAnimating: _isAnimating,
+                      isAnimating: _isAnimatingFadeOut,
                       entry: widget.entry,
-                      onChanged: _handleComplete,
-                      onChangeAnimated: _handleCompleteAnimation,
+                      onCompletionChange: _animateCompletionChange,
                       onLongPress: () async {_handleProgressChangeWithValidation(context);},
                     ),
                   ]
@@ -174,7 +174,6 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
       child: GestureDetector(
         // onTap: () async {_handleProgressChangeWithValidation(context, widget.entry.rule.completionTarget);},
         child: Container(
-          // color: Colors.red,
           width: iconHeight,
           alignment: Alignment.center,
           child: Text(
@@ -192,39 +191,62 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
 
   Container getHabitIcon(double iconHeight, ColorScheme colors) {
     return Container(
-                    height: iconHeight,
-                    width: iconHeight,
-                    decoration: BoxDecoration(
-                      color: colors.onPrimary.withAlpha(100),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  );
+      height: iconHeight,
+      width: iconHeight,
+      decoration: BoxDecoration(
+        color: colors.onPrimary.withAlpha(100),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
   }
 
   Expanded getHabitInfoText(bool completed, ColorScheme colors) {
+    
+    MyIcon habitTypeIcon = widget.entry.rule.type == CompletionType.atMost ? MyIcon.incorrect : MyIcon.correct;
+    double iconPadding = 4;
+    double iconMargin = 5;
+    double? iconSize = Styles.cardHabitName.fontSize! - 6;
+    Color iconColor = habitTypeIcon == MyIcon.correct? Colors.green : Colors.red;
     return Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.entry.habit.name,
-                          style: Styles.cardHabitName.copyWith(
-                            color: completed? colors.onSecondary : colors.onPrimary),
-                          ),
-                        Text(
-                          widget.entry.habit.getFrequencyDescription(),
-                          style: Styles.cardHabitFrequencyDescription.copyWith(
-                            color: completed? colors.onSecondary : colors.onPrimary),
-                        ),
-                      ],
-                    )
-                  );
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(iconPadding),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(iconSize+10),
+                  color: widget.entry.completed ? Colors.transparent : colors.onPrimary.withAlpha(100),
+                ),
+                width: iconSize+iconPadding*2,
+                height: iconSize+iconPadding*2,
+                child: SvgPicture.asset(
+                  "${Paths.iconFolderPath}${habitTypeIcon.iconName}",
+                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                ),
+              ),
+              SizedBox(width: iconMargin,),
+              Text(
+                widget.entry.habit.name,
+                style: Styles.cardHabitName.copyWith(
+                  color: completed? colors.onSecondary : colors.onPrimary
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: iconSize + 2*iconPadding + iconMargin),
+            // padding: EdgeInsets.only(left: 0),
+            
+            child: Text(
+              widget.entry.habit.getFrequencyDescription(),
+              style: Styles.cardHabitFrequencyDescription.copyWith(
+                color: completed? colors.onSecondary : colors.onPrimary),
+            ),
+          ),
+        ],
+      )
+    );
   }
-}
-
-enum ButtonIcon {
-  plus(iconName: "plus.svg"),
-  completed(iconName: "complete-black.svg");
-  final String iconName;
-  const ButtonIcon({required this.iconName});
 }
