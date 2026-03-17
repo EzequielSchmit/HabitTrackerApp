@@ -3,39 +3,36 @@ import 'package:habit_tracker_app/model/habit.dart';
 
 class HabitEntry {
 
-  HabitEntry({required this.habit, required DateTime date, required this.rule, required int progress}) : _progress = progress {
+  HabitEntry({required this.habit, required DateTime date, required int progress}) : _progress = progress {
     this.date = DateTime(date.year, date.month, date.day);
   }
 
   final Habit habit;
   late final DateTime date;
-  final CompletionRule rule;
   int _progress;
+  CompletionRule _rule = CompletionRule.emptyRule;
+
+
+
+  int getProgressPercentage(int progress) => (100*progress/rule.completionTarget).floor();
+
+
+
+  CompletionRule get rule {
+    if (_rule != CompletionRule.emptyRule) return _rule;
+    _rule = habit.getRuleByDate(date);
+    return _rule;
+  }
+
+  bool get completed {
+    return rule.isCompleted(progress);
+  }
+
+  String get id => "${habit.id}${date.year}/${date.month}/${date.day}";
 
   int get progress => _progress;
 
   set progress(int val) {
     if (val >= 0) _progress = val;
   }
-
-  // void incrementProgress() {
-  //   _progress++;
-  // }
-
-  // void decrementProgress() {
-  //   if (_progress > 0) _progress--;
-  // }
-
-  bool get completed {
-    return rule.isCompleted(progress);
-  }
-
-  int getProgressPercentage(int progress) => (100*progress/rule.completionTarget).floor();
-
-  // bool isAboutToBeCompleted(){
-  //   return progress >= rule.completionTarget - 1;
-  // }
-
-  String get id => "${habit.id}${date.year}/${date.month}/${date.day}";
-
 }

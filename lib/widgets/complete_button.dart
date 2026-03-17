@@ -11,6 +11,7 @@ class CompleteButton extends StatefulWidget {
     required this.colors,
     required this.onChanged,
     required this.onChangeAnimated,
+    required this.onLongPress,
     required this.isAnimating,
     required this.entry,
   });
@@ -19,6 +20,7 @@ class CompleteButton extends StatefulWidget {
   final ColorScheme colors;
   final Function() onChanged;
   final Function() onChangeAnimated;
+  final Function() onLongPress;
 
   final bool isAnimating;
   final HabitEntry entry;
@@ -60,12 +62,13 @@ class _CompleteButtonState extends State<CompleteButton> {
       behavior: HitTestBehavior.opaque,
       onTapDown: widget.isAnimating ? null : (_) => _handleTapDown(),
       onTap: widget.isAnimating ? null : () => _handleTap(),
+      onLongPress: widget.onLongPress,
       child: Container(
         height: widget.iconHeight,
         width: widget.iconHeight,
         padding: EdgeInsets.all(9),
         decoration: BoxDecoration(
-          color: widget.colors.onPrimary.withAlpha(100),
+          color: widget.entry.completed ? widget.colors.onSecondary.withAlpha(100) : widget.colors.onPrimary.withAlpha(100),
           borderRadius: BorderRadius.circular(widget.iconHeight),
         ),
         child: Stack(

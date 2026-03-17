@@ -23,29 +23,43 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState(){
     super.initState();
-      
+    
     List<Habit> habits = [];
 
     List<Color> colors = MyColors.colors;
     Random random = Random();
-    for (int i = 1; i < 11; i++){
-      Color randomColor = colors[random.nextInt(colors.length)];
-      habits.add(Habit(name: "Habito $i", backgroundColor: randomColor, id: Habit.getNewId()));
-    }
-
     DateTime now, today;
     now = DateTime.now();
     today = DateTime(now.year, now.month, now.day);
-    for (Habit h in habits){
+    /*
+    for (int i = 1; i < 11; i++){
+      Color randomColor = colors[random.nextInt(colors.length)];
+      Habit habit = Habit(name: "Habito $i", backgroundColor: randomColor, id: Habit.getNewId());
       CompletionRule rule = CompletionRule(
         id: 1,
-        habit: h,
         completionTarget: 3,// random.nextInt(3)+1,
         startDate: today,
-        endDate: today
       );
-      entriesFromSelectedDay.add(HabitEntry(habit: h, date: today, rule: rule, progress: 0));
+      habit.addRule(rule);
+      habits.add(habit);
     }
+
+    for (Habit h in habits){
+      entriesFromSelectedDay.add(HabitEntry(habit: h, date: today, progress: 0));
+    }
+
+    */
+
+    //
+
+    Habit habit = Habit(name: "Tomar vasos de agua", backgroundColor: MyColors.colors[1], id: 1);
+
+    CompletionRule r1 = CompletionRule(id: 1, completionTarget: 3, startDate: today.add(Duration(days: -10)));
+
+    habit.addRule(r1);
+
+    entriesFromSelectedDay.add(HabitEntry(habit: habit, date: today, progress: 0));
+
   }
 
   void _rebuild() {
@@ -77,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                   title: "Completado",
                   entries: entriesFromSelectedDay.where((element) => element.completed,).toList(),
                   onEntryChanged: _rebuild,
-                  onAction: (entry){entry.progress--;},
+                  onAction: (entry){entry.progress=0;},
                   messageWhenEmpty: "¡No hay hábitos completados aún!",
                 ),
               ],
