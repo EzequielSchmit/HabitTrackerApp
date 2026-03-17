@@ -27,10 +27,8 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     widget.onAction(widget.entry);
   }
   
-  Future<void> _handleCompleteAnimation() async {
-    bool  completed = widget.entry.completed,
-          isAtMost = widget.entry.rule.type == CompletionType.atMost;
-    if ((completed && !isAtMost)){
+  Future<void> _handleCompleteAnimation(bool completedStateChanged) async {
+    if (completedStateChanged){
       setState(() {
         _isAnimating = true;
       });
@@ -38,18 +36,18 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
       setState(() {
         _isAnimating = false;
       });
+      widget.onEntryChanged();
+    } else {
+      _rebuild();
     }
     print("rebuilding evrthng");
-    widget.onEntryChanged();
   }
 
   void _handleDecrease(){
+    bool wasCompleted = widget.entry.completed;
     widget.entry.progress--;
-    if (widget.entry.rule.type == CompletionType.atMost){
-      widget.onEntryChanged();
-    } else {
-      setState(() => ());
-    }
+    bool completedStateChanged = widget.entry.completed != wasCompleted;
+    _handleCompleteAnimation(completedStateChanged);
   }
 
   Future<int?> _changeProgressWithValidation(BuildContext context, CompletionRule rule) async {
@@ -107,11 +105,8 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
       bool wasCompleted = widget.entry.completed;
       widget.entry.progress = result;
       bool isCompleted = widget.entry.completed;
-      if (wasCompleted && isCompleted){
-        _rebuild();
-      } else {
-        _handleCompleteAnimation();
-      }
+      
+      _handleCompleteAnimation(wasCompleted && isCompleted);
     }
   }
 
@@ -149,7 +144,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                     getHabitIcon(iconHeight, colors),
                     SizedBox(width: 15),
                     getHabitInfoText(completed, colors),
-                    if (!widget.entry.rule.trivial && widget.entry.progress > 0 && (!widget.entry.completed || widget.entry.rule.type == CompletionType.atMost))
+                    if (widget.entry.progress > 0 )// && (!widget.entry.completed || widget.entry.rule.type == CompletionType.atMost))
                       DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease), 
                     CompleteButton(
                       iconHeight: iconHeight,
@@ -163,8 +158,8 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                   ]
                 ),
               ),
-              if (/*!widget.entry.completed &&*/ !widget.entry.rule.trivial && widget.entry.progress > 0)
-                getProgressField(context, cardPadding, iconHeight, colors),
+              // if (/*!widget.entry.completed &&*/ !widget.entry.rule.trivial && widget.entry.progress > 0)
+              getProgressField(context, cardPadding, iconHeight, colors),
             ]
           ),
         ),

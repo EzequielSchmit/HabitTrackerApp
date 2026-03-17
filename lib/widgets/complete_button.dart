@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/paths.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
@@ -19,7 +20,7 @@ class CompleteButton extends StatefulWidget {
   final double iconHeight;
   final ColorScheme colors;
   final Function() onChanged;
-  final Function() onChangeAnimated;
+  final Function(bool) onChangeAnimated;
   final Function() onLongPress;
 
   final bool isAnimating;
@@ -36,11 +37,16 @@ class _CompleteButtonState extends State<CompleteButton> {
 
   Future<void> _handleTap() async {
 
-    widget.onChanged();
+    bool wasCompleted = widget.entry.completed;
+    
+    // widget.onChanged();
+    widget.entry.progress++;
+    
     setState(() {});
     await Future.delayed(Duration(milliseconds: 200));
 
-    widget.onChangeAnimated();
+    bool completedStateChanged = widget.entry.completed != wasCompleted;
+    widget.onChangeAnimated(completedStateChanged);
   }
 
   Future<void> _handleTapDown() async {
@@ -113,7 +119,8 @@ class _CompleteButtonState extends State<CompleteButton> {
 
   Container getIcon(ColorScheme colors) {
     Color backgroundColor, color;
-    if (_isPressed || (currentIcon == ButtonIcon.completed && widget.entry.completed)){
+
+    if (_isPressed || (widget.entry.completed)){
       backgroundColor = colors.onSecondary;
       color = colors.onPrimary;
     } else {
@@ -145,6 +152,6 @@ class _CompleteButtonState extends State<CompleteButton> {
     }
   }
 
-  ButtonIcon get currentIcon => (widget.entry.completed || widget.entry.rule.trivial) ? ButtonIcon.completed : ButtonIcon.plus;
+  ButtonIcon get currentIcon => (widget.entry.rule.type != CompletionType.atMost && widget.entry.progress + 1 == widget.entry.rule.completionTarget) ? ButtonIcon.completed : ButtonIcon.plus;
 
 }
