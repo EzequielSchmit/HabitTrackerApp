@@ -28,7 +28,9 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   }
   
   Future<void> _handleCompleteAnimation() async {
-    if (widget.entry.completed){
+    bool  completed = widget.entry.completed,
+          isAtMost = widget.entry.rule.type == CompletionType.atMost;
+    if ((completed && !isAtMost)){
       setState(() {
         _isAnimating = true;
       });
@@ -37,12 +39,17 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
         _isAnimating = false;
       });
     }
+    print("rebuilding evrthng");
     widget.onEntryChanged();
   }
 
   void _handleDecrease(){
-    widget.entry.progress--;  
-    setState(() => ());
+    widget.entry.progress--;
+    if (widget.entry.rule.type == CompletionType.atMost){
+      widget.onEntryChanged();
+    } else {
+      setState(() => ());
+    }
   }
 
   Future<int?> _changeProgressWithValidation(BuildContext context, CompletionRule rule) async {
@@ -64,7 +71,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                 if (value == null || value.isEmpty) return "Campo obligatorio";
                 int? n = int.tryParse(value);
                 if (n == null) return "Debe ser un número";
-                if (rule.isLimitedByTarget && n > rule.completionTarget) return "El valor debe ser menor a ${rule.completionTarget}";
+                if (rule.type == CompletionType.exactly && n > rule.completionTarget) return "El valor debe ser menor a ${rule.completionTarget}";
                 if (n < 0) return "El valor debe ser mayor a 0";
 
                 return null;
@@ -130,7 +137,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
           margin: EdgeInsets.symmetric(vertical: widget.verticalMargin),
           // padding: EdgeInsets.all(cardPadding),
           decoration: BoxDecoration(
-            color: completed && !_isAnimating ? colors.secondary : widget.entry.habit.backgroundColor,
+            color: completed && !_isAnimating ? colors.secondary : widget.entry.habit.color,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Stack(
@@ -142,7 +149,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                     getHabitIcon(iconHeight, colors),
                     SizedBox(width: 15),
                     getHabitInfoText(completed, colors),
-                    if (!widget.entry.completed && !widget.entry.rule.trivial && widget.entry.progress > 0)
+                    if (!widget.entry.rule.trivial && widget.entry.progress > 0 && (!widget.entry.completed || widget.entry.rule.type == CompletionType.atMost))
                       DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease), 
                     CompleteButton(
                       iconHeight: iconHeight,

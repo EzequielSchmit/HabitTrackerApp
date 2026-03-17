@@ -81,7 +81,7 @@ class _CompleteButtonState extends State<CompleteButton> {
                 child: TweenAnimationBuilder<double>(
                   key: ValueKey(widget.entry.id),
                   tween: Tween(
-                    end: widget.entry.getProgressPercentage(widget.entry.progress) / 100,
+                    end: widget.entry.rule.getProgressPercentage(widget.entry.progress) / 100,
                   ),
                   duration: Duration(milliseconds: 200),
                   builder: (context, value, child){

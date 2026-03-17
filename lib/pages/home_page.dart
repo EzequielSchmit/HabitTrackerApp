@@ -51,14 +51,20 @@ class _HomePageState extends State<HomePage> {
     */
 
     //
-
-    Habit habit = Habit(name: "Tomar vasos de agua", backgroundColor: MyColors.colors[1], id: 1);
-
-    CompletionRule r1 = CompletionRule(id: 1, completionTarget: 3, startDate: today.add(Duration(days: -10)));
-
+    //Habito "positivo"
+    Habit habit = Habit(id: 1, name: "Tomar vasos de agua", color: MyColors.colors[1]);
+    CompletionRule r1 = CompletionRule(completionTarget: 3, startDate: today.add(Duration(days: -10)));
     habit.addRule(r1);
+    entriesFromSelectedDay.add(HabitEntry(id:1, habit: habit, date: today, progress: 0));
 
-    entriesFromSelectedDay.add(HabitEntry(habit: habit, date: today, progress: 0));
+    //Habito "negativo"
+    Habit habitN = Habit(id: 2, name: "Fumar cigarrillos", color: MyColors.colors[1]);
+    CompletionRule r2 = CompletionRule(completionTarget: 3, type: CompletionType.atMost, startDate: today.add(Duration(days: -10)));
+    habitN.addRule(r2);
+    entriesFromSelectedDay.add(HabitEntry(id:2, habit: habitN, date: today, progress: 0));
+
+    
+
 
   }
 
@@ -91,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                   title: "Completado",
                   entries: entriesFromSelectedDay.where((element) => element.completed,).toList(),
                   onEntryChanged: _rebuild,
-                  onAction: (entry){entry.progress=0;},
+                  onAction: (entry){entry.undoComplete();},
                   messageWhenEmpty: "¡No hay hábitos completados aún!",
                 ),
               ],
