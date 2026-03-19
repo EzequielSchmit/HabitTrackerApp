@@ -1,13 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.onEntryChanged, required this.messageWhenEmpty});
-  
+  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.onEntryChanged, required this.messageWhenEmpty, required this.controller});
+
+  final DailyHabitsController controller;  
   static final double verticalCardMargin = 8;
   static final double cardHeight = 70;
   static final double fullCardHeight = verticalCardMargin*2 + cardHeight;
@@ -93,6 +95,7 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                         height: DailyHabitsSection.cardHeight,
                         verticalMargin: DailyHabitsSection.verticalCardMargin,
                         onEntryChanged: () => widget.onEntryChanged(),
+                        controller: widget.controller,
                       );
                     },
                   ) : Container(

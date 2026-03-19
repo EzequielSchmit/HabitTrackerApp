@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 
 class DecreaseButton extends StatelessWidget {
-  const DecreaseButton({super.key, required this.iconHeight, required this.onDecrease});
+  const DecreaseButton({super.key, required this.iconHeight, required this.onDecrease, required this.controller});
 
+  final DailyHabitsController controller;
   final double iconHeight;
   final VoidCallback onDecrease;
 

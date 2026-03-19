@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
@@ -8,7 +9,9 @@ import 'package:habit_tracker_app/widgets/separating_line.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_section.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.controller});
+
+  final DailyHabitsController controller;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,7 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   List<HabitEntry> entriesFromSelectedDay = [];
-
+  
   @override
   void initState(){
     super.initState();
@@ -111,6 +114,7 @@ class _HomePageState extends State<HomePage> {
                   entries: upcomingList,
                   onEntryChanged: _rebuild,
                   messageWhenEmpty: "¡No hay hábitos pendientes para el día de hoy!",
+                  controller: widget.controller,
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(
@@ -120,6 +124,7 @@ class _HomePageState extends State<HomePage> {
                   entries: completedList,
                   onEntryChanged: _rebuild,
                   messageWhenEmpty: "¡No hay hábitos completados aún!",
+                  controller: widget.controller,
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(
@@ -129,6 +134,7 @@ class _HomePageState extends State<HomePage> {
                   entries: failedList,
                   onEntryChanged: _rebuild,
                   messageWhenEmpty: "No fallaste en ningun hábito ¡Seguí así!",
+                  controller: widget.controller,
                 ),
                 
               ],

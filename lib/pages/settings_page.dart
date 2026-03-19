@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  const SettingsPage({super.key, required this.controller});
+
+  final DailyHabitsController controller;
 
   @override
   Widget build(BuildContext context) {

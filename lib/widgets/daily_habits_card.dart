@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/styles.dart';
@@ -6,9 +7,17 @@ import 'package:habit_tracker_app/widgets/complete_button.dart';
 import 'package:habit_tracker_app/widgets/decrease_button.dart';
 
 class DailyHabitsCard extends StatefulWidget {
-  const DailyHabitsCard({super.key, required this.entry, required this.cardBackgroundColor, required this.cardColor, required this.height, required this.verticalMargin,
-                        required this.onEntryChanged});
+  const DailyHabitsCard({super.key,
+    required this.entry,
+    required this.cardBackgroundColor,
+    required this.cardColor,
+    required this.height,
+    required this.verticalMargin,
+    required this.onEntryChanged,
+    required this.controller
+  });
 
+  final DailyHabitsController controller;
   final HabitEntry entry;
   final Color cardBackgroundColor;
   final Color cardColor;
@@ -25,6 +34,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   
   Future<void> _animateCompletionChange(bool completedStateChanged) async {
     if (completedStateChanged){
+      //Animacion fade out
       setState(() {
         _isAnimatingFadeOut = true;
       });
@@ -32,8 +42,10 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
       setState(() {
         _isAnimatingFadeOut = false;
       });
+      //Luego de animacion, avisa que en esta entrada hubo un cambio del estado completado (de false a true, o al reves, no importa). el padre seguramente hara rebuild
       widget.onEntryChanged();
     } else {
+      //Si no hubo cambio del estado completado solo actualiza este widget (ejemplo, los textos (por ejemplo, progreso pasa de "2/4" a "3/4"))
       _rebuild();
     }
   }
@@ -140,7 +152,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                     getHabitInfoText(colors),
                     Opacity(
                       opacity: widget.entry.progress > 0 ? 1 : 0,
-                      child: DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease)
+                      child: DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease, controller: widget.controller,)
                     ), 
                     CompleteButton(
                       iconHeight: iconHeight,
@@ -150,6 +162,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                       entry: widget.entry,
                       onCompletionChange: _animateCompletionChange,
                       onLongPress: () async {_handleProgressChangeWithValidation(context);},
+                      controller: widget.controller,
                     ),
                   ]
                 ),

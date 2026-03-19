@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/util/date_time_extension.dart';
 
 class StatisticsPage extends StatefulWidget {
-  const StatisticsPage({super.key});
+  const StatisticsPage({super.key, required this.controller});
+
+  final DailyHabitsController controller;
 
   @override
   State<StatisticsPage> createState() => _StatisticsPageState();
@@ -13,13 +16,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
   int progress = 0;
 
   Future<int?> changeProgress(BuildContext context, int target) async {
-    TextEditingController controller = TextEditingController();
+    TextEditingController textEditingController = TextEditingController();
 
     String? result = await showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Text("Editar progreso"),
         content: TextField(
-          controller: controller,
+          controller: textEditingController,
           decoration: InputDecoration(
             hintText: "Ingrese nuevo valor entre 0 y $target",
             contentPadding: EdgeInsets.all(5),
@@ -35,7 +38,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context, controller.text);
+              Navigator.pop(context, textEditingController.text);
             },
             child: Text("Aceptar"),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/enums/my_icon.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
@@ -16,8 +17,10 @@ class CompleteButton extends StatefulWidget {
     required this.onLongPress,
     required this.isAnimating,
     required this.entry,
+    required this.controller
   });
 
+  final DailyHabitsController controller;
   final double iconHeight;
   final Color backgroundColor;
   final Color color;
@@ -35,6 +38,7 @@ class _CompleteButtonState extends State<CompleteButton> {
 
   bool _isPressed = false;
   late int progressPercentage;
+  final int durationOfPressEffectInMilis = 200;
 
   Future<void> _handleTap() async {
 
@@ -43,7 +47,7 @@ class _CompleteButtonState extends State<CompleteButton> {
     widget.entry.progress++;
     
     setState(() {});
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: durationOfPressEffectInMilis));
 
     bool completedStateChanged = widget.entry.completed != wasCompleted;
     widget.onCompletionChange(completedStateChanged);
@@ -54,7 +58,7 @@ class _CompleteButtonState extends State<CompleteButton> {
       setState(() {
         _isPressed= true;
       });
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: durationOfPressEffectInMilis));
       setState(() {
         _isPressed= false;
       });

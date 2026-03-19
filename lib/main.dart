@@ -1,39 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
+import 'package:habit_tracker_app/data/repositories/fake_habit_entry_repository.dart';
+import 'package:habit_tracker_app/data/repositories/fake_habit_repository.dart';
+import 'package:habit_tracker_app/data/repositories/habit_entry_repository.dart';
+import 'package:habit_tracker_app/data/repositories/habit_repository.dart';
 import 'package:habit_tracker_app/pages/main_page.dart';
 
 void main() {
-  runApp(const MyApp());
+
+  HabitRepository habitRepository = FakeHabitRepository();
+  HabitEntryRepository entryRepository = FakeHabitEntryRepository(habitRepository: habitRepository);
+
+  DailyHabitsController controller = DailyHabitsController(habitRepository: habitRepository, entryRepository: entryRepository);
+
+  runApp(MyApp(controller: controller,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.controller});
 
-  // This widget is the root of your application.
+  final DailyHabitsController controller;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Habit Tracker App',
       theme: ThemeData(
         colorScheme: .fromSeed(
-          seedColor: const Color.fromARGB(255, 255, 65, 65), //const Color.fromARGB(255, 0, 110, 255),
+          seedColor: const Color.fromARGB(255, 255, 65, 65),
           primary: const Color(0xFFFF6B81),
           onPrimary: const Color(0xFFFFFFFF),
           secondary: const Color(0xFFf2f2f2),
-          // onSecondary: const Color(0xFF000000),
           onSecondary: const Color.fromARGB(255, 51, 51, 76),
           surfaceContainerLowest: const Color(0xFFFFFFFF),
-          // onSurface: const Color(0xFF000000),
           onSurface: const Color.fromARGB(255, 51, 51, 76),
           inverseSurface: const Color.fromARGB(255, 51, 51, 76),
           tertiary: const Color.fromARGB(255, 51, 51, 76),
           onTertiary: const Color(0xFFFFFFFF),
           brightness: Brightness.light,
-          // surfaceContainerLow: 
         ),
         fontFamily: "GoogleSans",
       ),
       darkTheme: ThemeData(
-        // colorScheme: .fromSeed(seedColor: Colors.red)),
         colorScheme: .fromSeed(
           seedColor: const Color.fromARGB(255, 255, 65, 65), //const Color.fromARGB(255, 255, 0, 0),
           brightness: Brightness.dark
@@ -41,93 +49,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "GoogleSans"
       ),
       themeMode: ThemeMode.light,
-      home: MainPage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      home: MainPage(controller: controller,),
     );
   }
 }

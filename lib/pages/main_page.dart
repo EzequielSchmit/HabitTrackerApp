@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/enums/app_tab.dart';
 import 'package:habit_tracker_app/widgets/bottom_nav_bar.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({super.key, required this.controller});
+
+  final DailyHabitsController controller;
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -32,7 +35,7 @@ class _MainPageState extends State<MainPage> {
         title: selectedTab.title,
       ),
 
-      body: selectedTab.page,
+      body: selectedTab.pageBuilder(widget.controller),
 
       bottomNavigationBar: BottomNavBar(
         selectTab: selectTab,
