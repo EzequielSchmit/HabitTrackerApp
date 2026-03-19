@@ -7,11 +7,11 @@ class Styles {
   );
   static const TextStyle sectionTitle = TextStyle(
     fontSize: 15,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   );
 
   static const TextStyle cardHabitName = TextStyle(
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: FontWeight.w800,
   );
   static const TextStyle cardHabitFrequencyDescription = TextStyle(

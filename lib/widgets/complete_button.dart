@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_tracker_app/enums/my_icon.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
+import 'package:habit_tracker_app/util/color_extension.dart';
 import 'package:habit_tracker_app/util/paths.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
@@ -10,7 +11,8 @@ class CompleteButton extends StatefulWidget {
   const CompleteButton({
     super.key,
     required this.iconHeight,
-    required this.colors,
+    required this.backgroundColor,
+    required this.color,
     required this.onCompletionChange,
     required this.onLongPress,
     required this.isAnimating,
@@ -18,7 +20,8 @@ class CompleteButton extends StatefulWidget {
   });
 
   final double iconHeight;
-  final ColorScheme colors;
+  final Color backgroundColor;
+  final Color color;
   final Function(bool) onCompletionChange;
   final Function() onLongPress;
 
@@ -48,7 +51,7 @@ class _CompleteButtonState extends State<CompleteButton> {
   }
 
   Future<void> _handleTapDown() async {
-    if (!widget.entry.completed){
+    // if (!widget.entry.completed){
       setState(() {
         _isPressed= true;
       });
@@ -56,7 +59,7 @@ class _CompleteButtonState extends State<CompleteButton> {
       setState(() {
         _isPressed= false;
       });
-    }
+    // }
   }
 
   @override
@@ -72,7 +75,7 @@ class _CompleteButtonState extends State<CompleteButton> {
         width: widget.iconHeight,
         padding: EdgeInsets.all(9),
         decoration: BoxDecoration(
-          color: widget.entry.completed ? widget.colors.onSecondary.withAlpha(100) : widget.colors.onPrimary.withAlpha(100),
+          color: widget.backgroundColor.withAlpha(100),
           borderRadius: BorderRadius.circular(widget.iconHeight),
         ),
         child: Stack(
@@ -116,24 +119,20 @@ class _CompleteButtonState extends State<CompleteButton> {
   }
 
   Container getIcon(ColorScheme colors) {
-    Color backgroundColor, color;
+    Color backgroundColor, foregroundColor;
 
-    if (_isPressed || (widget.entry.completed)){
-      backgroundColor = colors.onSecondary;
-      color = colors.onPrimary;
-    } else {
-      backgroundColor = colors.onPrimary;
-      color = colors.onSecondary.withAlpha(80);
-    }
+    backgroundColor = widget.backgroundColor;
+    foregroundColor = widget.color.withAlpha(200);
+
 
     return Container(
       height: widget.iconHeight,
       width: widget.iconHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.iconHeight),
-        color: currentIcon == MyIcon.plus ? backgroundColor : color,
+        color: currentIcon == MyIcon.plus ? backgroundColor : foregroundColor,
       ),
-      child: getSvgIcon(backgroundColor: backgroundColor, color: color),
+      child: getSvgIcon(backgroundColor: backgroundColor, color: foregroundColor),
     );
   }
 

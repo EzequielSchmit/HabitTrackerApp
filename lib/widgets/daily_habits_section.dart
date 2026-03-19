@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/model/habit.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
-import 'package:habit_tracker_app/util/my_colors.dart';
+import 'package:habit_tracker_app/util/color_extension.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  const DailyHabitsSection({super.key, required this.title, required this.entries, required this.onEntryChanged, required this.onAction, required this.messageWhenEmpty});
+  DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.onEntryChanged, required this.onAction, required this.messageWhenEmpty});
   
   static final double verticalCardMargin = 8;
   static final double cardHeight = 70;
@@ -19,7 +19,12 @@ class DailyHabitsSection extends StatefulWidget {
   final Function() onEntryChanged;
   final Function(HabitEntry) onAction;
   final String messageWhenEmpty;
+  ///<code>cardbackgroundColor</code> The color this sections' cards will use for background. If null or not specified, each card will use its associated habit color. 
+  Color? cardBackgroundColor;
+  ///<code>cardColor</code> The color this sections' cards will use for text. If null or not specified, each card will use this context's colorScheme "onPrimary" color. 
+  Color? cardColor;
   
+
   @override
   State<DailyHabitsSection> createState() => _DailyHabitsSectionState();
 }
@@ -59,8 +64,9 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final bool thereAreEntries = widget.entries.isNotEmpty;
     final int maxVisibleEntries = 3;
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -85,6 +91,8 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                       return DailyHabitsCard(
                         key: ValueKey(entry.id),
                         entry: entry, 
+                        cardBackgroundColor: widget.cardBackgroundColor ?? entry.habit.color,
+                        cardColor: widget.cardColor ?? colors.onPrimary,
                         height: DailyHabitsSection.cardHeight,
                         verticalMargin: DailyHabitsSection.verticalCardMargin,
                         onEntryChanged: () => widget.onEntryChanged(),
@@ -99,7 +107,9 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                       color: colors.secondary,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(widget.messageWhenEmpty
+                    child: Text(
+                      widget.messageWhenEmpty,
+                      style: TextStyle(color: colors.onSecondary),
                     ),
                   ),
                 ),

@@ -9,10 +9,12 @@ import 'package:habit_tracker_app/widgets/complete_button.dart';
 import 'package:habit_tracker_app/widgets/decrease_button.dart';
 
 class DailyHabitsCard extends StatefulWidget {
-  const DailyHabitsCard({super.key, required this.entry, required this.height, required this.verticalMargin,
+  const DailyHabitsCard({super.key, required this.entry, required this.cardBackgroundColor, required this.cardColor, required this.height, required this.verticalMargin,
                         required this.onEntryChanged, required this.onAction});
 
   final HabitEntry entry;
+  final Color cardBackgroundColor;
+  final Color cardColor;
   final double height, verticalMargin;
   final VoidCallback onEntryChanged;
   final Function(HabitEntry entry) onAction;
@@ -70,7 +72,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                 if (value == null || value.isEmpty) return "Campo obligatorio";
                 int? n = int.tryParse(value);
                 if (n == null) return "Debe ser un número";
-                if (rule.type == CompletionType.exactly && n > rule.completionTarget) return "El valor debe ser menor a ${rule.completionTarget}";
+                //if (rule.type == CompletionType.exactly && n > rule.completionTarget) return "El valor debe ser menor a ${rule.completionTarget}";
                 if (n < 0) return "El valor debe ser mayor a 0";
 
                 return null;
@@ -120,7 +122,6 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final double cardPadding = 15;
     final double iconHeight = widget.height - 2*cardPadding;
-    final bool completed = widget.entry.completed;
     
     return AnimatedOpacity(
       duration: Duration(milliseconds: 350),
@@ -133,7 +134,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
           margin: EdgeInsets.symmetric(vertical: widget.verticalMargin),
           // padding: EdgeInsets.all(cardPadding),
           decoration: BoxDecoration(
-            color: completed && !_isAnimatingFadeOut ? colors.secondary : widget.entry.habit.color,
+            color: widget.cardBackgroundColor, 
             borderRadius: BorderRadius.circular(20),
           ),
           child: Stack(
@@ -143,13 +144,16 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                 child: Row(
                   children: [
                     getHabitIcon(iconHeight, colors),
-                    SizedBox(width: 15),
-                    getHabitInfoText(completed, colors),
-                    if (widget.entry.progress > 0 )// && (!widget.entry.completed || widget.entry.rule.type == CompletionType.atMost))
-                      DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease), 
+                    SizedBox(width: 10),
+                    getHabitInfoText(colors),
+                    Opacity(
+                      opacity: widget.entry.progress > 0 ? 1 : 0,
+                      child: DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease)
+                    ), 
                     CompleteButton(
                       iconHeight: iconHeight,
-                      colors: colors,
+                      backgroundColor: widget.cardColor,
+                      color: widget.cardBackgroundColor,
                       isAnimating: _isAnimatingFadeOut,
                       entry: widget.entry,
                       onCompletionChange: _animateCompletionChange,
@@ -180,7 +184,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
             "${widget.entry.progress}/${widget.entry.rule.completionTarget}",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: widget.entry.completed? colors.onSecondary.withAlpha(180) : colors.secondary,
+              color: widget.cardColor,
               fontSize: 10
             ),
           ),
@@ -200,49 +204,34 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     );
   }
 
-  Expanded getHabitInfoText(bool completed, ColorScheme colors) {
+  Expanded getHabitInfoText(ColorScheme colors) {
     
-    MyIcon habitTypeIcon = widget.entry.rule.type == CompletionType.atMost ? MyIcon.incorrect : MyIcon.correct;
-    double iconPadding = 4;
-    double iconMargin = 5;
-    double? iconSize = Styles.cardHabitName.fontSize! - 6;
-    Color iconColor = habitTypeIcon == MyIcon.correct? Colors.green : Colors.red;
+    bool isPositiveHabit = widget.entry.rule.type != CompletionType.atMost;
+    MyIcon habitTypeIcon = isPositiveHabit ? MyIcon.incorrect : MyIcon.correct;
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(iconPadding),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(iconSize+10),
-                  color: widget.entry.completed ? Colors.transparent : colors.onPrimary.withAlpha(100),
-                ),
-                width: iconSize+iconPadding*2,
-                height: iconSize+iconPadding*2,
-                child: SvgPicture.asset(
-                  "${Paths.iconFolderPath}${habitTypeIcon.iconName}",
-                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-                ),
+          Expanded(
+            child: Text(
+              "${isPositiveHabit? "+" : "-"} ${widget.entry.habit.name}",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              // softWrap: true,
+              style: Styles.cardHabitName.copyWith(
+                color: widget.cardColor, // completed? colors.onSecondary : colors.onPrimary
               ),
-              SizedBox(width: iconMargin,),
-              Text(
-                widget.entry.habit.name,
-                style: Styles.cardHabitName.copyWith(
-                  color: completed? colors.onSecondary : colors.onPrimary
-                ),
-              ),
-            ],
+            ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: iconSize + 2*iconPadding + iconMargin),
-            // padding: EdgeInsets.only(left: 0),
+            // padding: EdgeInsets.only(left: iconSize + 2*iconPadding + iconMargin),
+            padding: EdgeInsets.only(left: 0),
             
             child: Text(
-              widget.entry.habit.getFrequencyDescription(),
+              widget.entry.getFrequencyDescription(),
               style: Styles.cardHabitFrequencyDescription.copyWith(
-                color: completed? colors.onSecondary : colors.onPrimary),
+                color: widget.cardColor,//completed? colors.onSecondary : colors.onPrimary),
+              )
             ),
           ),
         ],
