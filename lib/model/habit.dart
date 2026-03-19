@@ -9,11 +9,6 @@ class Habit {
   final Color color;
   final List<CompletionRule> _rules;
 
-  String getFrequencyDescription() {
-    //Implementar
-    return "Cada día";
-  }
-
   ///
   ///Agrega la regla pasada por parámetro al hábito si no existe otra regla con fecha de inicio igual a la nueva regla.<br>
   ///Si la regla se agregó con exito devuelve <code>true</code>, de lo contrario, devuelve <code>false</code>.

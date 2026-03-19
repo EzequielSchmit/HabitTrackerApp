@@ -14,6 +14,12 @@ class HabitEntry {
   late final DateTime date;
   int _progress;
 
+  String getFrequencyDescription() {
+    //Implementar
+    int target = rule.completionTarget;
+    return rule.type != CompletionType.atMost ? "Cada día" : (target > 0 ? "Máximo $target ${target==1 ? "vez" : "veces"}" : "Nunca");
+  }
+
   void undoComplete() {
     if (rule.type == CompletionType.atMost) {
       progress++;
