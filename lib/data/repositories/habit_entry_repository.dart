@@ -12,7 +12,8 @@ abstract class HabitEntryRepository {
   ///<code>getEntriesByHabitId</code>: Devuelve una lista de copias de entradas cuyo id coincida con el id pasado por parámetro. 
   Future<List<HabitEntry>> getEntriesByHabitId(int habitId);
 
-  ///<code>getEntriesByDate</code>: Devuelve una lista de copias de entradas cuya fecha coincida con la fecha pasada por parámetro.
+  ///<code>getEntriesByDate</code>: Devuelve una lista de copias de las entradas persistidas en la fecha pasada por parámetro. <br>
+  ///No garantiza cubrir todos los hábitos existentes.
   Future<List<HabitEntry>> getEntriesByDate(DateTime date);
 
   ///<code>saveEntry</code>: Si la entrada pasada por parámetro existe, se actualiza, sino se crea. En ambos casos se utilizan los datos de la entrada pasada por parámetro. Siempre devuelve una copia de la entrada guardada. <br>

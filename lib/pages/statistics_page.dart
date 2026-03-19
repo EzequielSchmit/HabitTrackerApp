@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
-import 'package:habit_tracker_app/util/date_time_extension.dart';
 
 class StatisticsPage extends StatefulWidget {
   const StatisticsPage({super.key, required this.controller});

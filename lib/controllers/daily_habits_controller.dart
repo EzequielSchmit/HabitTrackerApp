@@ -1,10 +1,14 @@
 import 'package:habit_tracker_app/data/repositories/habit_entry_repository.dart';
 import 'package:habit_tracker_app/data/repositories/habit_repository.dart';
+import 'package:habit_tracker_app/model/completion_rule.dart';
+import 'package:habit_tracker_app/model/habit.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 
 class DailyHabitsController {
 
-  DailyHabitsController({required this.habitRepository, required this.entryRepository});
+  DailyHabitsController({required this.habitRepository, required this.entryRepository}){
+    print("Creando controller...");
+  }
 
   final HabitEntryRepository entryRepository;
   final HabitRepository habitRepository;
@@ -24,4 +28,24 @@ class DailyHabitsController {
     return setProgress(entry, entry.progress-1);
   }
 
+  bool isAboutToBeCompleted(HabitEntry entry) {
+    return (entry.rule.type != CompletionType.atMost) && (entry.progress + 1 == entry.rule.completionTarget);
+  }
+
+  Future<List<Habit>> getHabits() async {
+    return habitRepository.getHabits();
+  }
+
+  Future<List<HabitEntry>> getEntriesByDate(DateTime date) async {
+    List<Habit> habits = await getHabits();
+    List<HabitEntry> entries = [];
+    for (Habit h in habits) {
+      int? habitId = h.id;
+      if (habitId != null){
+        HabitEntry entry = await entryRepository.getOrCreateEntry(habitId, date);
+        entries.add(entry);
+      }
+    }
+    return entries;
+  }
 }

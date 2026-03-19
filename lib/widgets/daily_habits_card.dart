@@ -32,7 +32,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   
   bool _isAnimatingFadeOut = false;
   
-  Future<void> _animateCompletionChange(bool completedStateChanged) async {
+  Future<void> _handleProgressChange(bool completedStateChanged) async {
     if (completedStateChanged){
       //Animacion fade out
       setState(() {
@@ -50,16 +50,9 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     }
   }
 
-  void _handleDecrease(){
-    bool wasCompleted = widget.entry.completed;
-    widget.entry.progress--;
-    bool completedStateChanged = widget.entry.completed != wasCompleted;
-    _animateCompletionChange(completedStateChanged);
-  }
-
-  Future<int?> _changeProgressWithValidation(BuildContext context, CompletionRule rule) async {
+  Future<int?> _showProgressSetterDialog(BuildContext context, CompletionRule rule) async {
     final _formKey = GlobalKey<FormState>();
-    TextEditingController controller = TextEditingController();
+    TextEditingController textController = TextEditingController();
 
     String? result = await showDialog(context: context,
       builder: (context) {
@@ -67,7 +60,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
           content: Form(
             key: _formKey,
             child: TextFormField(
-              controller: controller,
+              controller: textController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: "Nuevo valor de progreso",
@@ -93,7 +86,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  Navigator.pop(context, controller.text);
+                  Navigator.pop(context, textController.text);
                 }
               },
               child: Text("Aceptar"),
@@ -106,14 +99,11 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     return int.tryParse(result ?? "");
   }
 
-  Future<void> _handleProgressChangeWithValidation(BuildContext context) async {
-    int? result = await _changeProgressWithValidation(context, widget.entry.rule);
+  Future<void> _handleProgressSetter(BuildContext context) async {
+    int? result = await _showProgressSetterDialog(context, widget.entry.rule);
     if (result != null) {
-      bool wasCompleted = widget.entry.completed;
-      widget.entry.progress = result;
-      bool isCompleted = widget.entry.completed;
-      
-      _animateCompletionChange(wasCompleted != isCompleted);
+      bool changed = await widget.controller.setProgress(widget.entry, result);
+      _handleProgressChange(changed);
     }
   }
 
@@ -152,7 +142,12 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                     getHabitInfoText(colors),
                     Opacity(
                       opacity: widget.entry.progress > 0 ? 1 : 0,
-                      child: DecreaseButton(iconHeight: iconHeight, onDecrease: _handleDecrease, controller: widget.controller,)
+                      child: DecreaseButton(
+                        iconHeight: iconHeight,
+                        onProgressChange: _handleProgressChange,
+                        entry: widget.entry,  
+                        controller: widget.controller,
+                      )
                     ), 
                     CompleteButton(
                       iconHeight: iconHeight,
@@ -160,15 +155,14 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                       color: widget.cardBackgroundColor,
                       isAnimating: _isAnimatingFadeOut,
                       entry: widget.entry,
-                      onCompletionChange: _animateCompletionChange,
-                      onLongPress: () async {_handleProgressChangeWithValidation(context);},
+                      onProgressChange: _handleProgressChange,
+                      onLongPress: () async {_handleProgressSetter(context);},
                       controller: widget.controller,
                     ),
                   ]
                 ),
               ),
-              // if (/*!widget.entry.completed &&*/ !widget.entry.rule.trivial && widget.entry.progress > 0)
-              getProgressField(context, cardPadding, iconHeight, colors),
+              getProgressText(context, cardPadding, iconHeight, colors),
             ]
           ),
         ),
@@ -176,25 +170,22 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     );
   }
 
-  Positioned getProgressField(BuildContext context, double cardPadding, double iconHeight, ColorScheme colors) {
+  Positioned getProgressText(BuildContext context, double cardPadding, double iconHeight, ColorScheme colors) {
     return Positioned(
       bottom: 1,
-      right: cardPadding/*+iconHeight*/,
-      child: GestureDetector(
-        // onTap: () async {_handleProgressChangeWithValidation(context, widget.entry.rule.completionTarget);},
-        child: Container(
-          width: iconHeight,
-          alignment: Alignment.center,
-          child: Text(
-            "${widget.entry.progress}/${widget.entry.rule.completionTarget}",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: widget.cardColor,
-              fontSize: 10
-            ),
+      right: cardPadding,
+      child: Container(
+        width: iconHeight,
+        alignment: Alignment.center,
+        child: Text(
+          "${widget.entry.progress}/${widget.entry.rule.completionTarget}",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: widget.cardColor,
+            fontSize: 10
           ),
         ),
-      )
+      ),
     );
   }
 

@@ -24,68 +24,20 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState(){
     super.initState();
-    
+    _loadEntries();
+  }
+
+  void _loadEntries() async {
     DateTime now, today;
     now = DateTime.now();
     today = DateTime(now.year, now.month, now.day);
 
-    /*
-    List<Habit> habits = [];
-    List<Color> colors = ColorExtension.habitsColors;
-    Random random = Random();
+    final entries = await widget.controller.getEntriesByDate(today);
 
-    for (int i = 1; i < 11; i++){
-      Color randomColor = colors[random.nextInt(colors.length)];
-      Habit habit = Habit(name: "Habito $i", backgroundColor: randomColor, id: Habit.getNewId());
-      CompletionRule rule = CompletionRule(
-        id: 1,
-        completionTarget: 3,// random.nextInt(3)+1,
-        startDate: today,
-      );
-      habit.addRule(rule);
-      habits.add(habit);
-    }
-
-    for (Habit h in habits){
-      entriesFromSelectedDay.add(HabitEntry(habit: h, date: today, progress: 0));
-    }
-
-    */
-
-    //
-
-    //Habito "positivo"
-    Habit habit = Habit(id: 1, name: "Tomar vasos de agua", color: ColorExtension.habitsColors[1]);
-    CompletionRule r1 = CompletionRule(completionTarget: 3, startDate: today.add(Duration(days: -10)));
-    habit.addRule(r1);
-    entriesFromSelectedDay.add(HabitEntry(id:1, habit: habit, date: today, progress: 0));
-    
-    //Habito "positivo trivial"
-    Habit habitT = Habit(id: 2, name: "Hacer la cama", color: ColorExtension.habitsColors[2]);
-    CompletionRule r2 = CompletionRule(completionTarget: 1, type: CompletionType.atLeast, startDate: today.add(Duration(days: -10)));
-    habitT.addRule(r2);
-    entriesFromSelectedDay.add(HabitEntry(id:2, habit: habitT, date: today, progress: 0));
-
-    //Habito "negativo"
-    Habit habitN = Habit(id: 3, name: "Fumar cigarrillos", color: ColorExtension.habitsColors[3]);
-    CompletionRule r3 = CompletionRule(completionTarget: 3, type: CompletionType.atMost, startDate: today.add(Duration(days: -10)));
-    habitN.addRule(r3);
-    entriesFromSelectedDay.add(HabitEntry(id:3, habit: habitN, date: today, progress: 0));
-
-    //Habito "negativo trivial"
-    Habit habitNT = Habit(id: 4, name: "Estar horas en insta en hora buena xd lol", color: ColorExtension.habitsColors[4]);
-    CompletionRule r4 = CompletionRule(completionTarget: 1, type: CompletionType.atMost, startDate: today.add(Duration(days: -10)));
-    habitNT.addRule(r4);
-    entriesFromSelectedDay.add(HabitEntry(id:4, habit: habitNT, date: today, progress: 0));
-
-    //Habito "negativo total"
-    Habit habitNTotal = Habit(id: 5, name: "Tratar mal a alguien", color: ColorExtension.habitsColors[5]);
-    CompletionRule r5 = CompletionRule(completionTarget: 0, type: CompletionType.atMost, startDate: today.add(Duration(days: -10)));
-    habitNTotal.addRule(r5);
-    entriesFromSelectedDay.add(HabitEntry(id:5, habit: habitNTotal, date: today, progress: 0));
-
-    
-
+    if (!mounted) return;
+    setState(() {
+      entriesFromSelectedDay = entries;
+    });
 
   }
 
@@ -96,9 +48,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    List<HabitEntry>  upcomingList = entriesFromSelectedDay.where((element) => (!element.completed && element.rule.type != CompletionType.atMost),).toList(),
-                      completedList = entriesFromSelectedDay.where((element) => element.completed,).toList(),
-                      failedList = entriesFromSelectedDay.where((element) => (!element.completed && element.rule.type == CompletionType.atMost),).toList();
+    List<HabitEntry> upcomingList, completedList, failedList;
+    upcomingList = entriesFromSelectedDay.where((element) => (!element.completed && element.rule.type != CompletionType.atMost),).toList();
+    completedList = entriesFromSelectedDay.where((element) => element.completed,).toList();
+    failedList = entriesFromSelectedDay.where((element) => (!element.completed && element.rule.type == CompletionType.atMost),).toList();
     return Container(
       width: double.infinity,
       color: colors.surfaceContainerLowest,

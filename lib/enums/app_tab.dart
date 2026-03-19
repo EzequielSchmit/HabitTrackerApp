@@ -9,9 +9,9 @@ import 'package:habit_tracker_app/widgets/greeting_title.dart';
 
 enum AppTab {
   home(iconName: "home.svg", pageBuilder: _buildHome, title: GreetingTitle()),
-  habits(iconName: "flags.svg", pageBuilder: _buildHome, title: GreetingTitle()),
-  statistics(iconName: "statistics.svg", pageBuilder: _buildHome, title: GreetingTitle()),
-  settings(iconName: "settings.svg", pageBuilder: _buildHome, title: GreetingTitle());
+  habits(iconName: "flags.svg", pageBuilder: _buildHabits, title: GreetingTitle()),
+  statistics(iconName: "statistics.svg", pageBuilder: _buildStatistics, title: GreetingTitle()),
+  settings(iconName: "settings.svg", pageBuilder: _buildSettings, title: GreetingTitle());
   
   final String iconName;
   final Widget Function(DailyHabitsController) pageBuilder;
@@ -24,3 +24,17 @@ enum AppTab {
 Widget _buildHome(DailyHabitsController controller) {
   return HomePage(controller: controller);
 }
+
+Widget _buildHabits(DailyHabitsController controller) {
+  return HabitsPage(controller: controller);
+}
+
+Widget _buildStatistics(DailyHabitsController controller) {
+  return StatisticsPage(controller: controller);
+}
+
+Widget _buildSettings(DailyHabitsController controller) {
+  return SettingsPage(controller: controller);
+}
+
+
