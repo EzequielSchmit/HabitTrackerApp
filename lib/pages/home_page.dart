@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit.dart';
@@ -24,14 +22,15 @@ class _HomePageState extends State<HomePage> {
   void initState(){
     super.initState();
     
-    List<Habit> habits = [];
-
-    List<Color> colors = ColorExtension.habitsColors;
-    Random random = Random();
     DateTime now, today;
     now = DateTime.now();
     today = DateTime(now.year, now.month, now.day);
+
     /*
+    List<Habit> habits = [];
+    List<Color> colors = ColorExtension.habitsColors;
+    Random random = Random();
+
     for (int i = 1; i < 11; i++){
       Color randomColor = colors[random.nextInt(colors.length)];
       Habit habit = Habit(name: "Habito $i", backgroundColor: randomColor, id: Habit.getNewId());
@@ -111,27 +110,24 @@ class _HomePageState extends State<HomePage> {
                   title: "Pendientes ${upcomingList.isNotEmpty ? "(${upcomingList.length})" : ""}",
                   entries: upcomingList,
                   onEntryChanged: _rebuild,
-                  onAction: (entry){entry.progress++;},
                   messageWhenEmpty: "¡No hay hábitos pendientes para el día de hoy!",
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(
-                  title: "Completados ${upcomingList.isNotEmpty ? "(${completedList.length})" : ""}",
+                  title: "Completados ${completedList.isNotEmpty ? "(${completedList.length})" : ""}",
                   cardBackgroundColor: colors.secondary,
                   cardColor: colors.onSecondary,
                   entries: completedList,
                   onEntryChanged: _rebuild,
-                  onAction: (entry){entry.undoComplete();},
                   messageWhenEmpty: "¡No hay hábitos completados aún!",
                 ),
                 SeparatingLine(colors: colors),
                 DailyHabitsSection(
-                  title: "Fallados ${upcomingList.isNotEmpty ? "(${failedList.length})" : ""}",
+                  title: "Fallados ${failedList.isNotEmpty ? "(${failedList.length})" : ""}",
                   cardBackgroundColor: colors.secondary,
                   cardColor: colors.onSecondary,
                   entries: failedList,
                   onEntryChanged: _rebuild,
-                  onAction: (entry){entry.undoComplete();},
                   messageWhenEmpty: "No fallaste en ningun hábito ¡Seguí así!",
                 ),
                 

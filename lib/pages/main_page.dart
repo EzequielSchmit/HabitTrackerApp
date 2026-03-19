@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker_app/pages/home_page.dart';
-import 'package:habit_tracker_app/pages/main_page.dart';
 import 'package:habit_tracker_app/enums/app_tab.dart';
 import 'package:habit_tracker_app/widgets/bottom_nav_bar.dart';
 

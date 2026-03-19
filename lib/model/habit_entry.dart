@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit.dart';
 
@@ -30,6 +28,15 @@ class HabitEntry {
 
   int getProgressPercentage(){
     return rule.getProgressPercentage(progress);
+  }
+
+  HabitEntry copyWith({int? id, Habit? habit, DateTime? date, int? progress}){
+    return HabitEntry(
+      id: id ?? this.id,
+      habit: habit ?? this.habit,
+      date: date ?? this.date,
+      progress: progress ?? this.progress
+    );
   }
 
   ///<code>rule</code>: Es la regla asociada a esta entrada. Depende del habito y la fecha asociada.

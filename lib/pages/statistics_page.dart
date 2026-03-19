@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/util/date_time_extension.dart';
 
 class StatisticsPage extends StatefulWidget {
   const StatisticsPage({super.key});
@@ -125,6 +126,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
             child: Text("Abrir dialog")
           ),
           Text("Progreso: $progress"),
+          TextButton(
+            onPressed: () {
+              
+              
+            },
+            child: Text("Probar cosas"),
+          )
         ],
       ),
 

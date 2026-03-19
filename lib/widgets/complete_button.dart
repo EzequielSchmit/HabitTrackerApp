@@ -5,7 +5,6 @@ import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/color_extension.dart';
 import 'package:habit_tracker_app/util/paths.dart';
-import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class CompleteButton extends StatefulWidget {
   const CompleteButton({
@@ -124,6 +123,10 @@ class _CompleteButtonState extends State<CompleteButton> {
     backgroundColor = widget.backgroundColor;
     foregroundColor = widget.color.withAlpha(200);
 
+    if (_isPressed){
+      backgroundColor = backgroundColor.toGrayScale();
+      backgroundColor = backgroundColor.isADarkColor? backgroundColor.withLuminance(0.95) : backgroundColor.withLuminance(0.4);
+    }
 
     return Container(
       height: widget.iconHeight,

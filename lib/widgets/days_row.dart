@@ -121,10 +121,7 @@ class _DaysRowState extends State<DaysRow> {
   }
 
   void _onScroll(){
-    if (controller == null) return;
-    
-    double offset = controller!.offset + controller!.position.viewportDimension/2;
-    //index*width = offset => index = offset/width
+    double offset = controller.offset + controller.position.viewportDimension/2;
     int index = offset ~/ fullItemWidth;
     int diffWithToday = index - centerIndex;
     DateTime viewedDate = today.add(Duration(days: diffWithToday));

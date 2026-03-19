@@ -1,14 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:habit_tracker_app/model/habit.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
-import 'package:habit_tracker_app/util/color_extension.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.onEntryChanged, required this.onAction, required this.messageWhenEmpty});
+  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.onEntryChanged, required this.messageWhenEmpty});
   
   static final double verticalCardMargin = 8;
   static final double cardHeight = 70;
@@ -17,12 +15,11 @@ class DailyHabitsSection extends StatefulWidget {
   final String title;
   final List<HabitEntry> entries;
   final Function() onEntryChanged;
-  final Function(HabitEntry) onAction;
   final String messageWhenEmpty;
   ///<code>cardbackgroundColor</code> The color this sections' cards will use for background. If null or not specified, each card will use its associated habit color. 
-  Color? cardBackgroundColor;
+  final Color? cardBackgroundColor;
   ///<code>cardColor</code> The color this sections' cards will use for text. If null or not specified, each card will use this context's colorScheme "onPrimary" color. 
-  Color? cardColor;
+  final Color? cardColor;
   
 
   @override
@@ -96,7 +93,6 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                         height: DailyHabitsSection.cardHeight,
                         verticalMargin: DailyHabitsSection.verticalCardMargin,
                         onEntryChanged: () => widget.onEntryChanged(),
-                        onAction: widget.onAction,
                       );
                     },
                   ) : Container(

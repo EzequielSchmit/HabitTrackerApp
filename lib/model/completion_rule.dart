@@ -28,9 +28,6 @@ class CompletionRule {
       return isCompleted(progress) ? 100 : 0;
     } else {
       int target = completionTarget;
-      int realProgress = type == CompletionType.atLeast? min(progress, target) : max(target - progress, 0);
-      // return (100 * realProgress / target).floor();
-
       double ratio;
       switch (type) {
         case CompletionType.atLeast:

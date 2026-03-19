@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker_app/pages/home_page.dart';
 import 'package:habit_tracker_app/pages/main_page.dart';
 
 void main() {

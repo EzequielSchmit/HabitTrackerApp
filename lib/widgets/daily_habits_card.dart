@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:habit_tracker_app/enums/my_icon.dart';
 import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
-import 'package:habit_tracker_app/util/paths.dart';
 import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/complete_button.dart';
 import 'package:habit_tracker_app/widgets/decrease_button.dart';
 
 class DailyHabitsCard extends StatefulWidget {
   const DailyHabitsCard({super.key, required this.entry, required this.cardBackgroundColor, required this.cardColor, required this.height, required this.verticalMargin,
-                        required this.onEntryChanged, required this.onAction});
+                        required this.onEntryChanged});
 
   final HabitEntry entry;
   final Color cardBackgroundColor;
   final Color cardColor;
   final double height, verticalMargin;
   final VoidCallback onEntryChanged;
-  final Function(HabitEntry entry) onAction;
   
   @override
   State<DailyHabitsCard> createState() => _DailyHabitsCardState();
@@ -26,10 +22,6 @@ class DailyHabitsCard extends StatefulWidget {
 class _DailyHabitsCardState extends State<DailyHabitsCard> {
   
   bool _isAnimatingFadeOut = false;
-
-  void _handleComplete() {
-    widget.onAction(widget.entry);
-  }
   
   Future<void> _animateCompletionChange(bool completedStateChanged) async {
     if (completedStateChanged){
@@ -207,7 +199,6 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   Expanded getHabitInfoText(ColorScheme colors) {
     
     bool isPositiveHabit = widget.entry.rule.type != CompletionType.atMost;
-    MyIcon habitTypeIcon = isPositiveHabit ? MyIcon.incorrect : MyIcon.correct;
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +210,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
               maxLines: 1,
               // softWrap: true,
               style: Styles.cardHabitName.copyWith(
-                color: widget.cardColor, // completed? colors.onSecondary : colors.onPrimary
+                color: widget.cardColor,
               ),
             ),
           ),
@@ -230,7 +221,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
             child: Text(
               widget.entry.getFrequencyDescription(),
               style: Styles.cardHabitFrequencyDescription.copyWith(
-                color: widget.cardColor,//completed? colors.onSecondary : colors.onPrimary),
+                color: widget.cardColor,
               )
             ),
           ),
