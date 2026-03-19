@@ -9,12 +9,13 @@ class FakeHabitRepository extends HabitRepository {
 
   FakeHabitRepository(){
     //Aca cargaria los datos a la lista _habits
+    //TODO: cargar datos
   }
 
   @override
   Future<Habit?> getHabitById(int habitId) async {
     Iterable<Habit> iterable = _habits.where( (h) => h.id == habitId,);
-    return iterable.isEmpty ? null : iterable.first;
+    return iterable.isEmpty ? null : iterable.first.copyWith();
   }
 
   @override
@@ -32,7 +33,7 @@ class FakeHabitRepository extends HabitRepository {
       newHabit = newHabit.copyWith(id: generateNextId());
       _habits.add(newHabit);
     }
-    return newHabit;
+    return newHabit.copyWith();
   }
 
   @override

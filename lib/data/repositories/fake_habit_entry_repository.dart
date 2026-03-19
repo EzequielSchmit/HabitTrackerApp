@@ -10,6 +10,7 @@ class FakeHabitEntryRepository extends HabitEntryRepository{
   FakeHabitEntryRepository({required HabitRepository habitRepository}) : _habitRepository = habitRepository{
     _entries = [];
     //Aca puedo cargar dias con un progreso ya hecho para testing
+    //TODO: cargar datos
   }
   
   late final List<HabitEntry> _entries;
@@ -41,7 +42,7 @@ class FakeHabitEntryRepository extends HabitEntryRepository{
 
     HabitEntry? entry = await getEntry(habitId, date);
     if (entry != null) {
-      return entry;
+      return entry.copyWith();
     }
 
     Habit? habit = await _habitRepository.getHabitById(habitId);
@@ -85,7 +86,7 @@ class FakeHabitEntryRepository extends HabitEntryRepository{
     return updatedEntry.copyWith();
 
   }
-
+  
   @override
   Future<void> deleteEntry(int habitId, DateTime date) async {
     _entries.removeWhere( (e) => e.habit.id == habitId && e.date.isSameDay(date), );
