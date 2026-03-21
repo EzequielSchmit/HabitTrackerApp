@@ -7,7 +7,7 @@ import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.onEntryChanged, required this.messageWhenEmpty, required this.controller});
+  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.messageWhenEmpty, required this.controller});
 
   final DailyHabitsController controller;  
   static final double verticalCardMargin = 8;
@@ -16,7 +16,6 @@ class DailyHabitsSection extends StatefulWidget {
   
   final String title;
   final List<HabitEntry> entries;
-  final Function() onEntryChanged;
   final String messageWhenEmpty;
   ///<code>cardbackgroundColor</code> The color this sections' cards will use for background. If null or not specified, each card will use its associated habit color. 
   final Color? cardBackgroundColor;
@@ -94,7 +93,6 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                         cardColor: widget.cardColor ?? colors.onPrimary,
                         height: DailyHabitsSection.cardHeight,
                         verticalMargin: DailyHabitsSection.verticalCardMargin,
-                        onEntryChanged: () => widget.onEntryChanged(),
                         controller: widget.controller,
                       );
                     },

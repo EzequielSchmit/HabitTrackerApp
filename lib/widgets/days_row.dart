@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/enums/month.dart';
 import 'package:habit_tracker_app/util/date_time_extension.dart';
 import 'package:habit_tracker_app/widgets/days_row_item.dart';
 
 class DaysRow extends StatefulWidget {
-  const DaysRow({super.key});
+  DaysRow({super.key, required this.controller}){
+    selectedDate = controller.selectedDate;
+  }
+
+  final DailyHabitsController controller;
+  late final DateTime selectedDate;
 
   @override
   State<DaysRow> createState() => _DaysRowState();
@@ -17,14 +23,13 @@ class _DaysRowState extends State<DaysRow> {
   static const double fullItemWidth = itemWidth + 2*horizontalItemPadding;
   static const int centerIndex = 20*365;
   
-  late final ScrollController controller;
-  DateTime today = normalizeDate(DateTime.now());
-  DateTime selectedDate = normalizeDate(DateTime.now());
+  late final ScrollController scrollController;
+  DateTime today = DateTime.now().normalize();
 
-  DateTime viewedDate = normalizeDate(DateTime.now());
+  DateTime viewedDate = DateTime.now().normalize();
   double? viewportWidth;
   bool initialized = false;
-  
+
   @override
   void initState(){
     super.initState();
@@ -32,29 +37,29 @@ class _DaysRowState extends State<DaysRow> {
     // controller = ScrollController(
     //   initialScrollOffset: centerIndex*(itemWidth+2*horizontalItemPadding) - 30,
     // );
-    controller = ScrollController();
-    controller.addListener(_onScroll);
+    scrollController = ScrollController();
+    scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   void _handleItemOnTap(DateTime date, int index) {
     final newOffset = index * fullItemWidth - viewportWidth! / 2 + fullItemWidth / 2;
-    controller.animateTo(newOffset, duration: Duration(milliseconds: 200), curve: Curves.decelerate);
-    setFechaSeleccionada(date);
+    scrollController.animateTo(newOffset, duration: Duration(milliseconds: 200), curve: Curves.decelerate);
+    widget.controller.setSelectedDay(date);
   }
 
-  void setFechaSeleccionada(DateTime dateToBeSelected){
-    if (!dateToBeSelected.isAfter(today)) {
-      setState(() {
-        selectedDate = dateToBeSelected;
-      });
-    }
-  }
+  // void setSelectedDay(DateTime dateToBeSelected){
+  //   if (!dateToBeSelected.isAfter(today)) {
+  //     setState(() {
+  //       selectedDate = dateToBeSelected;
+  //     });
+  //   }
+  // }
   
   
   @override
@@ -67,9 +72,9 @@ class _DaysRowState extends State<DaysRow> {
         if (!initialized && viewportWidth! > 0) {
           initialized = true;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            final initialOffset =
-                centerIndex * fullItemWidth - viewportWidth! / 2 + fullItemWidth / 2;
-            controller.jumpTo(initialOffset);
+            int diffBetweenSelectedAndToday = widget.selectedDate.differenceInDaysWith(today);
+            final initialOffset = (centerIndex + diffBetweenSelectedAndToday) * fullItemWidth - viewportWidth! / 2 + fullItemWidth / 2;
+            scrollController.jumpTo(initialOffset);
           });
         }
 
@@ -99,7 +104,7 @@ class _DaysRowState extends State<DaysRow> {
                 height: 75,
                 // color: Colors.blue, // colors.surfaceContainerLowest,
                 child: ListView.builder(
-                  controller: controller,
+                  controller: scrollController,
                   itemCount: centerIndex + 7,
                   scrollDirection: Axis.horizontal,
                   itemExtent: itemWidth + 2*horizontalItemPadding,
@@ -110,7 +115,7 @@ class _DaysRowState extends State<DaysRow> {
                     final DateTime date = today.add(Duration(days: diff));
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: horizontalItemPadding),
-                      child: DaysRowItem(date: date, index: index, isSelected: selectedDate.isSameDay(date), onTap: _handleItemOnTap,),
+                      child: DaysRowItem(date: date, index: index, isSelected: widget.selectedDate.isSameDay(date), onTap: _handleItemOnTap,),
                     );
                   },
                 ),
@@ -123,7 +128,7 @@ class _DaysRowState extends State<DaysRow> {
   }
 
   void _onScroll(){
-    double offset = controller.offset + controller.position.viewportDimension/2;
+    double offset = scrollController.offset + scrollController.position.viewportDimension/2;
     int index = offset ~/ fullItemWidth;
     int diffWithToday = index - centerIndex;
     DateTime viewedDate = today.add(Duration(days: diffWithToday));
@@ -136,6 +141,6 @@ class _DaysRowState extends State<DaysRow> {
   }
 }
 
-DateTime normalizeDate(DateTime date){
-  return DateTime(date.year, date.month, date.day);
-}
+// DateTime normalizeDate(DateTime date){
+//   return DateTime(date.year, date.month, date.day);
+// }

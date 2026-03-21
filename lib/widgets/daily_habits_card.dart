@@ -13,7 +13,6 @@ class DailyHabitsCard extends StatefulWidget {
     required this.cardColor,
     required this.height,
     required this.verticalMargin,
-    required this.onEntryChanged,
     required this.controller
   });
 
@@ -22,7 +21,6 @@ class DailyHabitsCard extends StatefulWidget {
   final Color cardBackgroundColor;
   final Color cardColor;
   final double height, verticalMargin;
-  final VoidCallback onEntryChanged;
   
   @override
   State<DailyHabitsCard> createState() => _DailyHabitsCardState();
@@ -42,8 +40,6 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
       setState(() {
         _isAnimatingFadeOut = false;
       });
-      //Luego de animacion, avisa que en esta entrada hubo un cambio del estado completado (de false a true, o al reves, no importa). el padre seguramente hara rebuild
-      widget.onEntryChanged();
     } else {
       //Si no hubo cambio del estado completado solo actualiza este widget (ejemplo, los textos (por ejemplo, progreso pasa de "2/4" a "3/4"))
       _rebuild();

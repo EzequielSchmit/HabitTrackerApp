@@ -1,6 +1,7 @@
 extension DateTimeExtension on DateTime {
 
-  DateTime normalize() => new DateTime(year, month, day);
+  ///<code>normalize</code>: Devuelve una nueva fecha, con el mismo día, mes y año que este [DateTime], pero el resto de atributos con sus valores por defecto.
+  DateTime normalize() => DateTime(year, month, day);
 
   ///<code>differenceInDaysWith</code>: Devuelve la diferencia nominal de dias entre dos fechas. Es decir, considera que si dos fechas tienen una diferencia de un día con solo estar en distintos días, aún si la diferencia en horas entre ellas es menor a 24 hs.<br>
   ///El valor retornado será negativo si <code>otherDate</code> ocurre despues de este [DateTime].
