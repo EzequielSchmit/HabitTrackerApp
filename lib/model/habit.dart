@@ -49,6 +49,11 @@ class Habit {
     );
   }
 
-  static final Habit emptyHabit = Habit(id: null, name: "Empty habit", color: Colors.white);
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is Habit && runtimeType == other.runtimeType && id == other.id;
   
+  @override
+  int get hashCode => (id ?? -1).hashCode;
 }

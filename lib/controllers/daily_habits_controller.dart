@@ -38,14 +38,18 @@ class DailyHabitsController {
 
   Future<List<HabitEntry>> getEntriesByDate(DateTime date) async {
     List<Habit> habits = await getHabits();
-    List<HabitEntry> entries = [];
-    for (Habit h in habits) {
+    List<HabitEntry> entries = await entryRepository.getEntriesByDate(date);
+    final currentHabitsIdSet = entries.map((e) => e.habit.id,).toSet();
+
+    for (Habit h in habits){
       int? habitId = h.id;
-      if (habitId != null){
-        HabitEntry entry = await entryRepository.getOrCreateEntry(habitId, date);
-        entries.add(entry);
+      if (habitId != null && !currentHabitsIdSet.contains(habitId)){
+        HabitEntry newEntry = await entryRepository.getOrCreateEntry(habitId, date);
+        entries.add(newEntry);
       }
     }
+
     return entries;
   }
+
 }

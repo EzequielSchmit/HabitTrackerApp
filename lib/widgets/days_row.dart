@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker_app/enums/month.dart';
+import 'package:habit_tracker_app/util/date_time_extension.dart';
 import 'package:habit_tracker_app/widgets/days_row_item.dart';
 
 class DaysRow extends StatefulWidget {
@@ -15,12 +16,15 @@ class _DaysRowState extends State<DaysRow> {
   static const double horizontalItemPadding = 8;
   static const double fullItemWidth = itemWidth + 2*horizontalItemPadding;
   static const int centerIndex = 20*365;
-  // ScrollController? controller;  
+  
   late final ScrollController controller;
   DateTime today = normalizeDate(DateTime.now());
   DateTime selectedDate = normalizeDate(DateTime.now());
-  DateTime viewedDate = normalizeDate(DateTime.now());
 
+  DateTime viewedDate = normalizeDate(DateTime.now());
+  double? viewportWidth;
+  bool initialized = false;
+  
   @override
   void initState(){
     super.initState();
@@ -38,41 +42,39 @@ class _DaysRowState extends State<DaysRow> {
     super.dispose();
   }
 
+  void _handleItemOnTap(DateTime date, int index) {
+    final newOffset = index * fullItemWidth - viewportWidth! / 2 + fullItemWidth / 2;
+    controller.animateTo(newOffset, duration: Duration(milliseconds: 200), curve: Curves.decelerate);
+    setFechaSeleccionada(date);
+  }
+
   void setFechaSeleccionada(DateTime dateToBeSelected){
-    setState(() {
-      if (!dateToBeSelected.isAfter(today)) {
+    if (!dateToBeSelected.isAfter(today)) {
+      setState(() {
         selectedDate = dateToBeSelected;
-      }
-    });
+      });
+    }
   }
   
-  double? viewportWidth;
-  bool initialized = false;
   
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    
     return LayoutBuilder(
       builder: (context, constraints) {
-        
-        viewportWidth = constraints.maxWidth;
 
+        viewportWidth = constraints.maxWidth;
         if (!initialized && viewportWidth! > 0) {
           initialized = true;
-
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final initialOffset =
                 centerIndex * fullItemWidth - viewportWidth! / 2 + fullItemWidth / 2;
-
             controller.jumpTo(initialOffset);
           });
         }
 
         /*final viewportWidth = constraints.maxWidth;
-        
         final initialOffset = centerIndex*fullItemWidth - viewportWidth/2 + fullItemWidth/2 ;
-        
         if (controller == null || !controller!.hasClients){
           controller = ScrollController(initialScrollOffset: initialOffset);
           controller!.addListener(_onScroll);
@@ -108,7 +110,7 @@ class _DaysRowState extends State<DaysRow> {
                     final DateTime date = today.add(Duration(days: diff));
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: horizontalItemPadding),
-                      child: DaysRowItem(date: date),
+                      child: DaysRowItem(date: date, index: index, isSelected: selectedDate.isSameDay(date), onTap: _handleItemOnTap,),
                     );
                   },
                 ),
