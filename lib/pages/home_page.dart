@@ -18,21 +18,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  // List<HabitEntry> entriesFromSelectedDay = [];
-  // bool _isLoading = true;
-
-  @override
-  void initState(){
-    super.initState();
-    // _loadEntries();
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: widget.controller,
       builder: (context, child) {
-        
         if (widget.controller.isLoading){
           return Center(child: CircularProgressIndicator(),);
         } 

@@ -12,8 +12,15 @@ class DecreaseButton extends StatelessWidget {
   final Function(bool) onProgressChange;
 
   void _handleTap() async {
-    bool changed = await controller.decrementProgress(entry);
-    onProgressChange(changed);
+    bool willComplete = controller.completedStateWillChange(entry, entry.progress - 1);
+
+    if (willComplete){
+      await onProgressChange(true);
+    }
+    
+    await controller.decrementProgress(entry);
+    
+    onProgressChange(false);
   }
 
   @override

@@ -5,10 +5,10 @@ import 'package:habit_tracker_app/enums/app_tab.dart';
 import 'package:habit_tracker_app/widgets/nav_button.dart';
 
 class BottomNavBar extends StatelessWidget {
-  const BottomNavBar({super.key, required this.selectedTab, required this.selectTab});
+  const BottomNavBar({super.key, required this.selectedTab, required this.onSelectTab});
 
   final AppTab selectedTab;
-  final Function(AppTab tab) selectTab;
+  final Function(AppTab tab) onSelectTab;
   
 
   @override
@@ -82,7 +82,7 @@ class BottomNavBar extends StatelessWidget {
               iconPath: tab.iconName,
               width: iconWidth,
               isSelected: selectedTab == tab,
-              select: () => selectTab(tab),
+              select: () => onSelectTab(tab),
             );
   }
 }

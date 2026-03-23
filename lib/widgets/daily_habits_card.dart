@@ -30,19 +30,31 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
   
   bool _isAnimatingFadeOut = false;
   
-  Future<void> _handleProgressChange(bool completedStateChanged) async {
+  Future<void> _handleIncreaseTap() async {
+    bool willComplete = widget.controller.completedStateWillChange(widget.entry, widget.entry.progress + 1);
+    if (willComplete){
+      await _animateProgressChange(true);
+    }
+
+    await widget.controller.incrementProgress(widget.entry);
+    
+    if (!mounted) return;
+
+    _animateProgressChange(false);
+  }
+
+  Future<void> _animateProgressChange(bool completedStateChanged) async {
     if (completedStateChanged){
       //Animacion fade out
       setState(() {
         _isAnimatingFadeOut = true;
       });
       await Future.delayed(Duration(milliseconds: 350));
-      setState(() {
-        _isAnimatingFadeOut = false;
-      });
+      if (!mounted) return;
     } else {
       //Si no hubo cambio del estado completado solo actualiza este widget (ejemplo, los textos (por ejemplo, progreso pasa de "2/4" a "3/4"))
-      _rebuild();
+      _refreshUI();
+      
     }
   }
 
@@ -99,11 +111,11 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
     int? result = await _showProgressSetterDialog(context, widget.entry.rule);
     if (result != null) {
       bool changed = await widget.controller.setProgress(widget.entry, result);
-      _handleProgressChange(changed);
+      _animateProgressChange(changed);
     }
   }
 
-  void _rebuild() {
+  void _refreshUI() {
     setState(() => ());
   }
 
@@ -140,7 +152,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                       opacity: widget.entry.progress > 0 ? 1 : 0,
                       child: DecreaseButton(
                         iconHeight: iconHeight,
-                        onProgressChange: _handleProgressChange,
+                        onProgressChange: _animateProgressChange,
                         entry: widget.entry,  
                         controller: widget.controller,
                       )
@@ -151,7 +163,7 @@ class _DailyHabitsCardState extends State<DailyHabitsCard> {
                       color: widget.cardBackgroundColor,
                       isAnimating: _isAnimatingFadeOut,
                       entry: widget.entry,
-                      onProgressChange: _handleProgressChange,
+                      onTap: () async {_handleIncreaseTap();},
                       onLongPress: () async {_handleProgressSetter(context);},
                       controller: widget.controller,
                     ),

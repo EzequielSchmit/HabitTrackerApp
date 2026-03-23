@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habit_tracker_app/controllers/daily_habits_controller.dart';
 import 'package:habit_tracker_app/enums/my_icon.dart';
+import 'package:habit_tracker_app/model/completion_rule.dart';
 import 'package:habit_tracker_app/model/habit_entry.dart';
 import 'package:habit_tracker_app/util/color_extension.dart';
 import 'package:habit_tracker_app/util/paths.dart';
@@ -12,7 +13,7 @@ class CompleteButton extends StatefulWidget {
     required this.iconHeight,
     required this.backgroundColor,
     required this.color,
-    required this.onProgressChange,
+    required this.onTap,
     required this.onLongPress,
     required this.isAnimating,
     required this.entry,
@@ -23,7 +24,7 @@ class CompleteButton extends StatefulWidget {
   final double iconHeight;
   final Color backgroundColor;
   final Color color;
-  final Function(bool) onProgressChange;
+  final Function() onTap;
   final Function() onLongPress;
 
   final bool isAnimating;
@@ -39,21 +40,13 @@ class _CompleteButtonState extends State<CompleteButton> {
   late int progressPercentage;
   final int durationOfPressEffectInMilis = 200;
 
-  Future<void> _handleTap() async {
-
-    bool changed = await widget.controller.incrementProgress(widget.entry);
-    
-    setState(() {});
-    await Future.delayed(Duration(milliseconds: durationOfPressEffectInMilis));
-    
-    widget.onProgressChange(changed);
-  }
 
   Future<void> _handleTapDown() async {
     setState(() {
       _isPressed= true;
     });
     await Future.delayed(Duration(milliseconds: durationOfPressEffectInMilis));
+    if (!mounted) return;
     setState(() {
       _isPressed= false;
     });
@@ -65,7 +58,7 @@ class _CompleteButtonState extends State<CompleteButton> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: widget.isAnimating ? null : (_) => _handleTapDown(),
-      onTap: widget.isAnimating ? null : () => _handleTap(),
+      onTap: widget.isAnimating ? null : widget.onTap,
       onLongPress: widget.onLongPress,
       child: Container(
         height: widget.iconHeight,
@@ -148,6 +141,6 @@ class _CompleteButtonState extends State<CompleteButton> {
     }
   }
 
-  MyIcon get currentIcon => widget.controller.isAboutToBeCompleted(widget.entry) ? MyIcon.completed : MyIcon.plus;
+  MyIcon get currentIcon => widget.controller.completedStateWillChange(widget.entry, widget.entry.progress + 1) && widget.entry.rule.type != CompletionType.atMost ? MyIcon.completed : MyIcon.plus;
 
 }

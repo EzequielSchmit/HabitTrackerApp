@@ -16,7 +16,7 @@ class _MainPageState extends State<MainPage> {
 
   AppTab selectedTab = AppTab.home;
 
-  void selectTab(AppTab tab){
+  void _handleSelectTab(AppTab tab){
     setState(() {
       selectedTab = tab;
     });
@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: colors.secondary,
       appBar: AppBar(
         backgroundColor: colors.secondary,
         surfaceTintColor: colors.secondary,
@@ -38,7 +38,7 @@ class _MainPageState extends State<MainPage> {
       body: selectedTab.pageBuilder(widget.controller),
 
       bottomNavigationBar: BottomNavBar(
-        selectTab: selectTab,
+        onSelectTab: _handleSelectTab,
         selectedTab: selectedTab,
       ),
     );

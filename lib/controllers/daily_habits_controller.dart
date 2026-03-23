@@ -24,13 +24,12 @@ class DailyHabitsController extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+  
   //General methods:
 
   void setSelectedDay(DateTime date) async {
-    print("selecting ${date.getSimpleDateString()}?");
     if (!date.isAfter(DateTime.now().normalize())) {
       selectedDate = date;
-      print("yes.. selecting it..");
       _loadEntries();
     }
   }
@@ -66,7 +65,14 @@ class DailyHabitsController extends ChangeNotifier {
     return setProgress(entry, entry.progress-1);
   }
 
-  bool isAboutToBeCompleted(HabitEntry entry) {
+  bool completedStateWillChange(HabitEntry entry, int progressToBeSet) {
+    int progress = entry.progress;
+    int target = entry.rule.completionTarget;
+    if (entry.rule.type != CompletionType.atMost) {
+      return entry.completed? progressToBeSet == target - 1 : progressToBeSet == target;
+    } else {
+      return entry.completed? progressToBeSet == target + 1 : progressToBeSet == target;
+    }
     return (entry.rule.type != CompletionType.atMost) && (entry.progress + 1 == entry.rule.completionTarget);
   }
 
