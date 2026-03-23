@@ -7,7 +7,7 @@ import 'package:habit_tracker_app/util/styles.dart';
 import 'package:habit_tracker_app/widgets/daily_habits_card.dart';
 
 class DailyHabitsSection extends StatefulWidget {
-  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, required this.entries, required this.messageWhenEmpty, required this.controller});
+  const DailyHabitsSection({super.key, required this.title, this.cardBackgroundColor, this.cardColor, this.isColorFaded = false, required this.entries, required this.messageWhenEmpty, required this.controller});
 
   final DailyHabitsController controller;  
   static final double verticalCardMargin = 8;
@@ -21,6 +21,7 @@ class DailyHabitsSection extends StatefulWidget {
   final Color? cardBackgroundColor;
   ///<code>cardColor</code> The color this sections' cards will use for text. If null or not specified, each card will use this context's colorScheme "onPrimary" color. 
   final Color? cardColor;
+  final bool isColorFaded;
   
 
   @override
@@ -89,8 +90,8 @@ class _DailyHabitsSectionState extends State<DailyHabitsSection> {
                       return DailyHabitsCard(
                         key: ValueKey(entry.id),
                         entry: entry, 
-                        cardBackgroundColor: widget.cardBackgroundColor ?? entry.habit.color,
-                        cardColor: widget.cardColor ?? colors.onPrimary,
+                        cardBackgroundColor: widget.isColorFaded ? entry.habit.color.withAlpha(50) : widget.cardBackgroundColor ?? entry.habit.color,
+                        cardColor: widget.isColorFaded ? colors.onSecondary : widget.cardColor ?? colors.onPrimary,
                         height: DailyHabitsSection.cardHeight,
                         verticalMargin: DailyHabitsSection.verticalCardMargin,
                         controller: widget.controller,
