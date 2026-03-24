@@ -19,6 +19,7 @@ class Styles {
     fontWeight: FontWeight.w300,
   );
 
+  static const TextStyle creationConfigItem = TextStyle(fontWeight: FontWeight.w400, fontSize: 14);
   
 
 }

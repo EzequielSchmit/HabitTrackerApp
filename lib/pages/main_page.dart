@@ -40,6 +40,7 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavBar(
         onSelectTab: _handleSelectTab,
         selectedTab: selectedTab,
+        controller: widget.controller,
       ),
     );
   }

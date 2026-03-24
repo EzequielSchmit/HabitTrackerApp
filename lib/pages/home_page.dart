@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                         controller: widget.controller,
                       ),
                     if (selectedDayIsToday)
-                      SeparatingLine(colors: colors),
+                      SeparatingLine(),
                     DailyHabitsSection(
                       title: "Completados ${completedList.isNotEmpty ? "(${completedList.length})" : ""}",
                       // cardBackgroundColor: colors.secondary,
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                       messageWhenEmpty: "¡No hay hábitos completados aún!",
                       controller: widget.controller,
                     ),
-                    SeparatingLine(colors: colors),
+                    SeparatingLine(),
                     DailyHabitsSection(
                       title: "Fallados ${failedList.isNotEmpty ? "(${failedList.length})" : ""}",
                       cardBackgroundColor: colors.secondary,
